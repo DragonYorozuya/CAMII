@@ -70,11 +70,17 @@ body{
 
 		//#### ADD a lista
 		$scope.addBTN = function(event){
-			alert(event.target.value);
-
-
-
-			
+			var txt = event.target.value;
+			//alert("./saveAnimeLista.php?add="+txt);
+			$http.get("./saveAnimeLista.php?add="+txt).then(function(response){
+				//console.log(response.data);
+				
+				if(response.data.sit == 1){
+					alert("add");
+				}else{
+					alert("erro");
+				}
+			});
 		}
 		
 	});

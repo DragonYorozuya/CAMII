@@ -36,14 +36,15 @@ class CAMIIanime{
        }
    }
    
-   public function addAnimeLista(){
+   public function addAnimeLista($anime){
        $this->bd = new BancoDeDados();
        
        $sql = "INSERT INTO MINHALISTA(MINCLIENTE, MINANIME, MINEP, MINSITUACAO) VALUES (1,?,?,?)";
        
-       if($this->bd->query($sql,[1,0,1])){
+       if($this->bd->query($sql,[$anime,0,1])){
            return true;
        }
+       return false;
    }
     
    
