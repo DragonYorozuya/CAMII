@@ -8,12 +8,13 @@ require_once dirname(__DIR__).'/lib/BancoDeDados.php';
 class CAMIIanime{
    private $bd;
    
-   public function myList($json=false){
+   public function myList($user, $json=false){
        $this->bd = new BancoDeDados();
        
-       $sql = "SELECT * FROM ANIME";
+//       $sql = "SELECT * FROM ANIME";
+       $sql = "SELECT * FROM MINHALISTA LEFT JOIN ANIME ON MINANIME=ANICOD WHERE MINCLIENTE=?";
        
-       if($this->bd->querySelect($sql)){
+       if($this->bd->querySelect($sql,[$user])){
        
            if($json == true){
                 return json_encode($this->bd->ResultadosASSOCAll(),true);
@@ -25,7 +26,7 @@ class CAMIIanime{
    public function searchAnime($search,$json=false){
        $this->bd = new BancoDeDados();
        
-       $sql = "SELECT * FROM ANIME WHERE ANINOME LIKE ?";
+       $sql = "SELECT * FROM ANIME LEFT JOIN MINHALISTA ON ANICOD=MINANIME WHERE ANINOME LIKE ?";
        
        if($this->bd->querySelect($sql,['%'.$search.'%'])){
        
