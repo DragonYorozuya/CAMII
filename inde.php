@@ -1,6 +1,8 @@
+<!doctype html>
 <html>
-
 <head>
+	<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+	<meta charset="utf-8">
 	<link href="./css/bootstrap.min.css" rel="stylesheet">
 	<script type="text/javascript" src="./js/jquery.js"></script>
 	<script type="text/javascript" src="./js/bootstrap.min.js"></script>
@@ -13,34 +15,39 @@ body{
 }
 .borda{border: 1px solid}
 
-.
+.animeLShead{
+    color: #fff;
+    background: #009688;
+    text-align: center;
+    font-weight: 600;
+    font-size: 22px;
+    border-left: 1px solid;
+}
+.animeLSbody{
+    font-size: 18px;
+}
 </style>
 <body>
 
 <div class="container-fluid borda">
-	<div class="row ">
 	<div ng-app="CAMII" ng-controller="camiiCtr">
-		
-	
-		<div class="col-md-12 col-xs-12 ">
-			Busca: <input type="text" class="busca" ng-change="busca($event)" ng-model="ftxt"><br /><br />
-			<span ng-repeat="x in bMen" >
-				{{ x.ANINOME }}  <button value="{{ x.ANICOD }}" ng-click="addBTN($event)" style='display:{{x.a}}'>add</button><br/>
-			</span>
-			
-<!--  			<div class="boxMens" ng-repeat="x in camiiMen">{{ x.ANINOME }} {{ x.ANIEPI }}</div> -->
-			
-		</div>
-		
-		<div class="col-md-12 borda">
-				<div anime></div>
-		</div>
-		
-		
-		
-		
+    	<div class="row">
+    		<div class="col-md-12 col-sm-12 borda">
+    			Busca: <input type="text" class="busca" ng-change="busca($event)" ng-model="ftxt"><br /><br />
+    			<span ng-repeat="x in bMen" >
+    				{{ x.ANINOME }}  <button value="{{ x.ANICOD }}" ng-click="addBTN($event)" style='display:{{x.a}}'>add</button><br/>
+    			</span>
+    			
+    <!--  			<div class="boxMens" ng-repeat="x in camiiMen">{{ x.ANINOME }} {{ x.ANIEPI }}</div> -->
+    			
+    		</div>
+    	
+    		<div class="col-md-12 borda">
+            	<anime></anime>
+    		</div>
+    	</div>
 	</div>	
-	
+</div>	
 	<script type="text/javascript">
 
 
@@ -83,14 +90,10 @@ body{
     };
   }) 
 
-
-
-
-
-
- 
  */
 
+
+		
 	var app = angular.module('CAMII',['ngSanitize']);
 
 	app.controller('camiiCtr', function($scope, $http){
@@ -147,7 +150,7 @@ body{
     					for(i=0; i<response.data.length;i++){
     						//console.log(response.data[i]);
     						var tx = response.data[i];
-    						tx.a = 0;
+    						tx.a = i+1;
     						response.data[i].texto = tx;
     					}
     					$scope.camiiMen = response.data	;
@@ -165,10 +168,7 @@ body{
 		
 		
 	
-	</div>	
 	
-	
-</div>
 
 
 </body>
