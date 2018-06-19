@@ -136,6 +136,7 @@ body{
 			});
 		}
 		
+		
 	}).directive('anime', ['$http', function($http) { 
 		//### GET ANIME LISTA
 		  return {
@@ -154,8 +155,30 @@ body{
     						response.data[i].texto = tx;
     					}
     					$scope.camiiMen = response.data	;
+
+    					//#### ADD 1 ep
+    					$scope.addMais1BTN = function(event) { 
+        					//console.log( event.target.value);
+        					var ep = new Array();
+    						 	ep[0] = $(event.target).parent().children('.ep');
+    						 	ep[1]= parseInt($(ep[0]).html());
+    						 	var epMax = new Array();
+    						 	epMax[0] = $(event.target).parent().children('.epMax');
+    						 	epMax[1]= parseInt($(epMax[0]).html());
+    						 	var anime = event.target.value;
+						
+							if( ep[1] < epMax[1]){ //arrumar
+								$http.get("./API/save1ep.php?anime="+anime).then(function(response){
+									//alert(response.data.sit);
+
+									$(ep[0]).html(ep[1]+1); // desativar a execulsao até concluir para evitar erro
+	                 			})
+							}
+	
+        				}
     				}); 
     		  }],
+    		  
     		  templateUrl: './template/animeLSitem.html'
 		  };
 	}]);

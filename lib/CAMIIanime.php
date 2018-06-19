@@ -47,6 +47,18 @@ class CAMIIanime{
        }
        return false;
    }
+   
+   public function add1ep($anime) {
+       $this->bd = new BancoDeDados();
+       
+       $sql = "UPDATE MINHALISTA SET MINEP=MINEP+1 WHERE MINCLIENTE = 1 AND MINANIME = ?";
+       
+       if ($this->bd->query($sql,[$anime])) {
+           return true;
+       }
+       
+       
+   }
     
    
     
