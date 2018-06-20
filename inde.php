@@ -41,9 +41,23 @@ body{
     <!--  			<div class="boxMens" ng-repeat="x in camiiMen">{{ x.ANINOME }} {{ x.ANIEPI }}</div> -->
     			
     		</div>
+    		
+    		<div class="col-md-12 col-sm-12 borda">
+    			
+    			
+    			
+    			
+    			
+    			
+    			
+    			
+    <!--  			<div class="boxMens" ng-repeat="x in camiiMen">{{ x.ANINOME }} {{ x.ANIEPI }}</div> -->
+    			
+    		</div>
     	
     		<div class="col-md-12 borda">
             	<anime></anime>
+            	<malsearch></malsearch>
     		</div>
     	</div>
 	</div>	
@@ -97,6 +111,35 @@ body{
 	var app = angular.module('CAMII',['ngSanitize']);
 
 	app.controller('camiiCtr', function($scope, $http){
+
+		//## MAL
+// 		var time;
+// 		$scope.buscaMal = function (event) {
+// 			clearTimeout(time);
+// 			time = setTimeout(function(){
+// 				var txt = $(".buscaMal").val();
+// 				$http.get("./API/MALanimeSearch.php?search="+txt).then(function(response){
+
+// 					console.log(response.data);
+// 					if(response.data != ""){
+//     					//console.log(response.data.categories[0].items.length);
+//     					for(i=0; i<response.data.categories[0].items.length;i++){
+//     						//console.log(response.data.categories[1].items[i]);
+//     						var tx = response.data.categories[0].items[i];
+//     						/*tx.a = "";
+//     						if(tx.MINCLIENTE == 1){
+//     							tx.a = "none";
+//     						}*/
+    						
+//     						response.data[i] = tx;
+//     					}
+// 					}
+// 					$scope.malMen = response.data;
+// 				});
+// 			},1000);
+// 		}
+
+		
 		
 		//########### SEARCH
 		var time;//tempo para iniciar a busca
@@ -181,10 +224,43 @@ body{
     		  
     		  templateUrl: './template/animeLSitem.html'
 		  };
+	}])
+	.directive('malsearch', ['$http', function($http) { 
+		//### GET ANIME LISTA
+        return {
+            restrict: 'AE',
+            replace: true,
+            transclude: true,
+            scope: {title: '@'},
+            controller: ['$scope', function m($scope) {
+            	//## MAL
+        		var time;
+        		$scope.buscaMal = function (event) {
+        			clearTimeout(time);
+        			time = setTimeout(function(){
+        				var txt = $(".buscaMal").val();
+        				$http.get("./API/MALanimeSearch.php?search="+txt).then(function(response){
+
+        					console.log(response.data);
+        					if(response.data != ""){
+            					//console.log(response.data.categories[0].items.length);
+            					for(i=0; i<response.data.categories[0].items.length;i++){
+            						//console.log(response.data.categories[1].items[i]);
+            						var tx = response.data.categories[0].items[i];
+            						response.data[i] = tx;
+            					}
+        					}
+        					$scope.malMen = response.data;
+        				});
+        			},1000);
+        		}
+            }],
+            templateUrl: './template/animeBoxNewTL.html'
+		};
 	}]);
 
 
-
+	//animeBoxNewTL.html    malsearch
 	
 
 	</script>

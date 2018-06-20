@@ -57,7 +57,28 @@ class CAMIIanime{
            return true;
        }
        
+   }
+   
+   public function animeMal($search) {
+       $ch = @curl_init();
+       //@curl_setopt($ch, CURLOPT_URL,'https://myanimelist.net/anime/34332');
+       @curl_setopt($ch, CURLOPT_URL,'https://myanimelist.net/search/prefix.json?type=anime&keyword='.$search.'&v=1');
+       //@curl_setopt ( $ch, CURLOPT_HEADER, TRUE );
+       //@curl_setopt ( $ch, CURLOPT_NOBODY, TRUE );
+       @curl_setopt ( $ch, CURLOPT_FOLLOWLOCATION, TRUE );
+       @curl_setopt ( $ch, CURLOPT_RETURNTRANSFER, TRUE );
+       curl_setopt  ($ch, CURLOPT_FILETIME, true);
+       curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
+       $html = curl_exec($ch);// acessar URL
+       $response_code = curl_getinfo($ch, CURLINFO_HTTP_CODE);// Pegar o c�digo de resposta
+       curl_close($ch);
        
+       if ($response_code == '404') {
+           echo 'Página não existente';
+       } else {
+           header("Content-type:application/json");
+           echo $html;
+       }
    }
     
    

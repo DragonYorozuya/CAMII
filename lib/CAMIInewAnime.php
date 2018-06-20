@@ -21,58 +21,74 @@ class CAMIInewAnime{
         if($this->bd->query($sql,[$an['cod'],$an['nome'],$an['episodio'],$an['tipo'],$an['img'],$an['status'],$an['inicio'],$an['fim'],$an['adaptacao'],$an['ce'],$an['estudio']])){
             return true;
         }
+        return false;
     }
     
     /**
      * 
      * @param boolean $save  True: save BD | False: not save BD
-     * @return number|string|mixed $save=true retorna resultado BD| $save=false retorna array anime
+     * @return number|string|mixed $save=true retorna resultado BD| $save=false retorna array anime | 2: anime ja cadastrado
      */
-    public function getAnime($save=false){
-        $ch = @curl_init();
-        //@curl_setopt($ch, CURLOPT_URL,'https://myanimelist.net/anime/34332');
-        @curl_setopt($ch, CURLOPT_URL,'http://localhost/CAMII/Sword.html');
-        //@curl_setopt ( $ch, CURLOPT_HEADER, TRUE );
-        //@curl_setopt ( $ch, CURLOPT_NOBODY, TRUE );
-        @curl_setopt ( $ch, CURLOPT_FOLLOWLOCATION, TRUE );
-        @curl_setopt ( $ch, CURLOPT_RETURNTRANSFER, TRUE );
-        curl_setopt  ($ch, CURLOPT_FILETIME, true);
-        curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
-        $html = curl_exec($ch);// acessar URL
-        $response_code = curl_getinfo($ch, CURLINFO_HTTP_CODE);// Pegar o c�digo de resposta
-        curl_close($ch);
+    public function getAnime($cod, $save=false){
+        if($this->animeExiste($cod)){
         
-        
-        
-        if ($response_code == '404') {
-            echo 'P�gina n�o existente';
-        } else {
-            $pos = strpos ( $html, '<h1 class="h1"><span itemprop="name">' );
-            if ($pos === false) {
-                
-            }else{
-                $htmlReduzido = substr($html,$pos);
-                
-                $pos2 = strpos ( $htmlReduzido, 'More reviews</a></span>Reviews</h2>' );
-                
-                $htmlReduzido = substr($htmlReduzido,0,$pos2);
-                
-                $an = $this->getDadosanime($htmlReduzido);
-                
-                if($save != false){
-                    $this->saveAnime($an);
-                    return true;
+            $ch = @curl_init();
+            //@curl_setopt($ch, CURLOPT_URL,'https://myanimelist.net/anime/34332');
+            @curl_setopt($ch, CURLOPT_URL,'https://myanimelist.net/anime/'.$cod);
+            //@curl_setopt ( $ch, CURLOPT_HEADER, TRUE );
+            //@curl_setopt ( $ch, CURLOPT_NOBODY, TRUE );
+            @curl_setopt ( $ch, CURLOPT_FOLLOWLOCATION, TRUE );
+            @curl_setopt ( $ch, CURLOPT_RETURNTRANSFER, TRUE );
+            curl_setopt  ($ch, CURLOPT_FILETIME, true);
+            curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
+            $html = curl_exec($ch);// acessar URL
+            $response_code = curl_getinfo($ch, CURLINFO_HTTP_CODE);// Pegar o c�digo de resposta
+            curl_close($ch);
+            
+            
+            
+            if ($response_code == '404') {
+                echo 'Página não existente';
+            } else {
+                $pos = strpos ( $html, '<h1 class="h1"><span itemprop="name">' );
+                if ($pos === false) {
+                    
+                }else{
+                    $htmlReduzido = substr($html,$pos);
+                    
+                    $pos2 = strpos ( $htmlReduzido, 'More reviews</a></span>Reviews</h2>' );
+                    
+                    $htmlReduzido = substr($htmlReduzido,0,$pos2);
+                    
+                    $an = $this->getDadosanime($htmlReduzido,$cod);
+                    
+                    if($save != false){
+                        if($this->saveAnime($an)){
+                            return true;
+                        };
+                       return false;
+                    }
+                    return $an;
                 }
-                
-                return $an;
             }
         }
+        return 2; // erro se anime ja existir
+    }
+    
+    public function animeExiste($cod) {
+        $this->bd = new BancoDeDados();
+        
+        $sql = "SELECT * FROM ANIME WHERE ANICOD =?";
+        
+        if ($this->bd->querySelect($sql,[$cod]) && $this->bd->recuperaQtdeDeLinhaRetornadas() == 0) {
+            return TRUE ;
+        }
+        return false;
     }
     
     
-    
-    public function getDadosanime($html){
-        $anime["cod"] = 1;
+    public function getDadosanime($html,$cod){
+        $anime["cod"] = $cod;
         //#### NOME
         if(preg_match ('/<h1 class=\"h1\"><span itemprop=\"name\">(.*)<\/span>/', $html, $tit)){
             //var_dump($tit[1]);
@@ -92,20 +108,10 @@ class CAMIInewAnime{
             //$img[0];
             //$img[1];
             
-            /* if (! copy ( $img[0], './anime/img/'.$img[1].".jpg")) {
-             echo "erro na porra da imagem $img[1]";
+             if (! copy ( $img[0], './img/anime/'.$img[1].".jpg")) {
+                echo "erro na porra da imagem $img[1]";
              // return false;
-             }else{
-             if (! copy ( './anime/img/'.$img[1].".jpg", '../../arq/img/anime/'.$img[1].".jpg")) {
-             echo "erro na COPIA para pasta da imagem $img[1]";
-             // return false;
-             }else{
-             //echo $img[1];
-             /*$arquivo = fopen ( $pasta.'aIMG.xml', 'w+' );
-             fwrite ( $arquivo, $novoTxt );
-             fclose ( $arquivo );*/
-            //   }
-            // }
+             }
         }else{
             $anime["img"] = '';
         }
