@@ -13,7 +13,6 @@
 body{
     background: #f9f9f9;
 }
-.borda{border: 1px solid}
 
 .animeLShead{
     color: #fff;
@@ -29,118 +28,29 @@ body{
 </style>
 <body>
 
-<div class="container-fluid borda">
+<div class="container-fluid">
 	<div ng-app="CAMII" ng-controller="camiiCtr">
     	<div class="row">
-    		<div class="col-md-12 col-sm-12 borda">
+    		<div class="col-md-12 col-sm-12 border">
     			Busca: <input type="text" class="busca" ng-change="busca($event)" ng-model="ftxt"><br /><br />
     			<span ng-repeat="x in bMen" >
+    				<img alt="" src="./img/anime/{{x.ANIIMG}}.jpg">
     				{{ x.ANINOME }}  <button value="{{ x.ANICOD }}" ng-click="addBTN($event)" style='display:{{x.a}}'>add</button><br/>
     			</span>
-    			
-    <!--  			<div class="boxMens" ng-repeat="x in camiiMen">{{ x.ANINOME }} {{ x.ANIEPI }}</div> -->
-    			
     		</div>
-    		
-    		<div class="col-md-12 col-sm-12 borda">
     			
-    			
-    			
-    			
-    			
-    			
-    			
-    			
-    <!--  			<div class="boxMens" ng-repeat="x in camiiMen">{{ x.ANINOME }} {{ x.ANIEPI }}</div> -->
-    			
-    		</div>
-    	
-    		<div class="col-md-12 borda">
+    		<div class="col-md-12 ">
             	<anime></anime>
             	<malsearch></malsearch>
     		</div>
     	</div>
 	</div>	
 </div>	
-	<script type="text/javascript">
 
-
-
-
-/*
- <body ng-app="docsTabsExample">
-  <my-tabs>
-  
-</my-tabs>
-<mm></mm>
-</body>
-
-
- angular.module('docsTabsExample', [])
-  .directive('myTabs', function() {
-    return {
-      restrict: 'E',
-      transclude: true,
-      scope: {},
-      controller: ['$scope', function m($scope) {
-        $scope.a = 1;
-
-        
-      }],
-      template: '<h1>{{a}}</h1>'
-    };
-  })
-  .directive('mm', function() {
-    return {
-      restrict: 'E',
-      transclude: true,
-      scope: {},
-      controller: ['$scope', function m($scope) {
-        $scope.a = 1;
-
-        
-      }],
-      template: '<h1>{{a}}</h1>'
-    };
-  }) 
-
- */
-
-
-		
+<script type="text/javascript">
 	var app = angular.module('CAMII',['ngSanitize']);
-
 	app.controller('camiiCtr', function($scope, $http){
 
-		//## MAL
-// 		var time;
-// 		$scope.buscaMal = function (event) {
-// 			clearTimeout(time);
-// 			time = setTimeout(function(){
-// 				var txt = $(".buscaMal").val();
-// 				$http.get("./API/MALanimeSearch.php?search="+txt).then(function(response){
-
-// 					console.log(response.data);
-// 					if(response.data != ""){
-//     					//console.log(response.data.categories[0].items.length);
-//     					for(i=0; i<response.data.categories[0].items.length;i++){
-//     						//console.log(response.data.categories[1].items[i]);
-//     						var tx = response.data.categories[0].items[i];
-//     						/*tx.a = "";
-//     						if(tx.MINCLIENTE == 1){
-//     							tx.a = "none";
-//     						}*/
-    						
-//     						response.data[i] = tx;
-//     					}
-// 					}
-// 					$scope.malMen = response.data;
-// 				});
-// 			},1000);
-// 		}
-
-		
-		
 		//########### SEARCH
 		var time;//tempo para iniciar a busca
 		$scope.busca = function (event) {
@@ -179,7 +89,6 @@ body{
 			});
 		}
 		
-		
 	}).directive('anime', ['$http', function($http) { 
 		//### GET ANIME LISTA
 		  return {
@@ -217,11 +126,9 @@ body{
 									$(ep[0]).html(ep[1]+1); // desativar a execulsao até concluir para evitar erro
 	                 			})
 							}
-	
         				}
     				}); 
     		  }],
-    		  
     		  templateUrl: './template/animeLSitem.html'
 		  };
 	}])
@@ -241,7 +148,7 @@ body{
         				var txt = $(".buscaMal").val();
         				$http.get("./API/MALanimeSearch.php?search="+txt).then(function(response){
 
-        					console.log(response.data);
+        					//console.log(response.data);
         					if(response.data != ""){
             					//console.log(response.data.categories[0].items.length);
             					for(i=0; i<response.data.categories[0].items.length;i++){
@@ -251,6 +158,16 @@ body{
             					}
         					}
         					$scope.malMen = response.data;
+							//### ADD novo anime evento
+        					$scope.addNewAnimeBTN = function(event) {
+								console.log(event.target.value);
+								var an = "";
+								$http.get("./API/saveNewAnime.php?cod="+an).then(function(response){
+									if(response.data.sit == 1){
+										alert(10);
+									}		
+								});
+							}	
         				});
         			},1000);
         		}
@@ -258,17 +175,6 @@ body{
             templateUrl: './template/animeBoxNewTL.html'
 		};
 	}]);
-
-
-	//animeBoxNewTL.html    malsearch
-	
-
 	</script>
-		
-		
-	
-	
-
-
 </body>
 </html>

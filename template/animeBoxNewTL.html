@@ -16,7 +16,8 @@
 	      <div class="modal-body">
 	     	 Mal: <input type="text" class="buscaMal" ng-change="buscaMal($event)" ng-model="maltxt"><br /><br />
 	      	<span ng-repeat="x in malMen" >
-				{{x.id}} {{ x.name }}  <button value="{{ x.ANICOD }}" ng-click="addBTN($event)" style='display:{{x.a}}'>add</button><br/>
+	      		<img src="{{ x.thumbnail_url}}"/>
+				{{ x.name }}  <button value="{{ x.id }}" ng-click="addNewAnimeBTN($event)" style='display:{{x.a}}'>add</button><br/>
 			</span>
 	         
 	       </div>

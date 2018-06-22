@@ -1,5 +1,5 @@
 <?php
-require_once './lib/BancoDeDados.php';
+require_once dirname(__DIR__).'/lib/BancoDeDados.php';
 class CAMIInewAnime{
     /**
      * 
@@ -81,7 +81,7 @@ class CAMIInewAnime{
         $sql = "SELECT * FROM ANIME WHERE ANICOD =?";
         
         if ($this->bd->querySelect($sql,[$cod]) && $this->bd->recuperaQtdeDeLinhaRetornadas() == 0) {
-            return TRUE ;
+            return true ;
         }
         return false;
     }
@@ -108,7 +108,7 @@ class CAMIInewAnime{
             //$img[0];
             //$img[1];
             
-             if (! copy ( $img[0], './img/anime/'.$img[1].".jpg")) {
+             if (! copy ( $img[0], '../img/anime/'.$img[1].".jpg")) {
                 echo "erro na porra da imagem $img[1]";
              // return false;
              }

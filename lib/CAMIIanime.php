@@ -60,9 +60,10 @@ class CAMIIanime{
    }
    
    public function animeMal($search) {
+       $search = str_replace(" ", "%20", $search);
        $ch = @curl_init();
        //@curl_setopt($ch, CURLOPT_URL,'https://myanimelist.net/anime/34332');
-       @curl_setopt($ch, CURLOPT_URL,'https://myanimelist.net/search/prefix.json?type=anime&keyword='.$search.'&v=1');
+       @curl_setopt($ch, CURLOPT_URL,'https://myanimelist.net/search/prefix.json?type=all&keyword='.$search.'&v=1');
        //@curl_setopt ( $ch, CURLOPT_HEADER, TRUE );
        //@curl_setopt ( $ch, CURLOPT_NOBODY, TRUE );
        @curl_setopt ( $ch, CURLOPT_FOLLOWLOCATION, TRUE );
