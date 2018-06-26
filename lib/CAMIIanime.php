@@ -10,12 +10,10 @@ class CAMIIanime{
    
    public function myList($user, $json=false){
        $this->bd = new BancoDeDados();
-       
-//       $sql = "SELECT * FROM ANIME";
-       $sql = "SELECT * FROM MINHALISTA LEFT JOIN ANIME ON MINANIME=ANICOD WHERE MINCLIENTE=?";
-       
+      // $sql = "SELECT * FROM MINHALISTA LEFT JOIN ANIME ON MINANIME=ANICOD WHERE MINCLIENTE=?";
+//       $sql = "SELECT *,COUNT(ASSEP) AS EP FROM MINHALISTA LEFT JOIN ANIME ON MINANIME=ANICOD LEFT JOIN ANIMEASSISTIDO ON MINANIME=AASANIME AND MINCLIENTE=AASUSER WHERE MINCLIENTE=? GROUP BY MINANIME";
+       $sql = "SELECT MINCLIENTE,ANICOD,MINSITUACAO,ANINOME,ANIEPI,ANITIPO,ANIIMG,ANISTATUS,ANIINICIO,ANIFINAL,ANIADAP,ANICI,ANIESTUDIO,COUNT(ASSEP) AS EP FROM MINHALISTA LEFT JOIN ANIME ON MINANIME=ANICOD LEFT JOIN ANIMEASSISTIDO ON MINANIME=AASANIME AND MINCLIENTE=AASUSER WHERE MINCLIENTE=? GROUP BY MINANIME";
        if($this->bd->querySelect($sql,[$user])){
-       
            if($json == true){
                 return json_encode($this->bd->ResultadosASSOCAll(),true);
            }
@@ -48,15 +46,40 @@ class CAMIIanime{
        return false;
    }
    
-   public function add1ep($anime) {
+   public function add1ep($anime,$ep) {
        $this->bd = new BancoDeDados();
-       
-       $sql = "UPDATE MINHALISTA SET MINEP=MINEP+1 WHERE MINCLIENTE = 1 AND MINANIME = ?";
-       
-       if ($this->bd->query($sql,[$anime])) {
-           return true;
+       if ($this->epCadastradoVerifica($anime, $ep)) {
+           $sql = "INSERT INTO ANIMEASSISTIDO(AASUSER, AASANIME, ASSEP, ASSDATA) VALUES (?,?,?,NOW())";
+           if ($this->bd->query($sql,[1,$anime,$ep])) {
+               return true;
+           }
+           return 2;
        }
-       
+       return false;    
+   }
+   
+   public function animeEpAssistido($anime) {
+       $this->bd = new BancoDeDados();
+       $sql = "SELECT * FROM ANIMEASSISTIDO WHERE  AASUSER=? AND AASANIME=?";
+       if ($this->bd->querySelect($sql,[1,$anime])) {
+           return $this->bd->ResultadosASSOCAll();
+       }
+       return FALSE;
+   }
+   
+   /**
+    * Verifica se um episodio ja foi cadastrado
+    * @param int $anime
+    * @param int $ep
+    * @return boolean
+    */
+   private function epCadastradoVerifica($anime, $ep) {
+       $this->bd = new BancoDeDados();
+       $sql = "SELECT * FROM ANIMEASSISTIDO WHERE  AASUSER=? AND AASANIME=? AND ASSEP=?";
+       if ($this->bd->querySelect($sql,[1,$anime,$ep]) && $this->bd->recuperaQtdeDeLinhaRetornadas() == 0) {
+          return true;
+       }
+       return false;
    }
    
    public function animeMal($search) {

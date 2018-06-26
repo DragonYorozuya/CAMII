@@ -1,10 +1,10 @@
 <?php
-if (isset($_GET['anime'])) {
+if (isset($_GET['anime']) && isset($_GET['ep'])) {
     require_once '../lib/CAMIIanime.php';
     
     $camii = new CAMIIanime();
     
-    if ($camii->add1ep($_GET['anime'])){
+   if ($camii->add1ep($_GET['anime'],$_GET['ep'])){
         header("Content-type:application/json");
         echo '{"sit":1}';
         return;
@@ -14,5 +14,5 @@ if (isset($_GET['anime'])) {
     return;  
 }
 
-
+// SELECT *,COUNT(ASSEP) AS EP FROM `MINHALISTA` INNER JOIN ANIMEASSISTIDO ON MINANIME=AASANIME  AND MINCLIENTE=AASUSER GROUP BY MINANIME
 ?>

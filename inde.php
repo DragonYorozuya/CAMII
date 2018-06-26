@@ -31,7 +31,7 @@ body{
 <div class="container-fluid">
 	<div ng-app="CAMII" ng-controller="camiiCtr">
     	<div class="row">
-    		<div class="col-md-12 col-sm-12 border">
+    		<div class="col-md-12 col-sm-12 border ">
     			Busca: <input type="text" class="busca" ng-change="busca($event)" ng-model="ftxt"><br /><br />
     			<span ng-repeat="x in bMen" >
     				<img alt="" src="./img/anime/{{x.ANIIMG}}.jpg">
@@ -44,6 +44,7 @@ body{
             	<malsearch></malsearch>
     		</div>
     	</div>
+    	
 	</div>	
 </div>	
 
@@ -66,7 +67,6 @@ body{
 						if(tx.MINCLIENTE == 1){
 							tx.a = "none";
 						}
-						
 						response.data[i].texto = tx;
 					}
 					$scope.bMen = response.data	;
@@ -80,7 +80,6 @@ body{
 			//alert("./saveAnimeLista.php?add="+txt);
 			$http.get("./saveAnimeLista.php?add="+txt).then(function(response){
 				//console.log(response.data);
-				
 				if(response.data.sit == 1){
 					alert("add");
 				}else{
@@ -88,7 +87,6 @@ body{
 				}
 			});
 		}
-		
 	}).directive('anime', ['$http', function($http) { 
 		//### GET ANIME LISTA
 		  return {
@@ -97,7 +95,6 @@ body{
     		  transclude: true,
     	      scope: {title: '@'},
     		  controller: ['$scope', function m($scope) {
-    			
     			  $http.get("./myListJSON.php").then(function(response){
     					//console.log(response.data);
     					for(i=0; i<response.data.length;i++){
@@ -118,11 +115,9 @@ body{
     						 	epMax[0] = $(event.target).parent().children('.epMax');
     						 	epMax[1]= parseInt($(epMax[0]).html());
     						 	var anime = event.target.value;
-						
 							if( ep[1] < epMax[1]){ //arrumar
-								$http.get("./API/save1ep.php?anime="+anime).then(function(response){
+								$http.get("./API/save1ep.php?anime="+anime+"&ep="+(ep[1]+1)).then(function(response){
 									//alert(response.data.sit);
-
 									$(ep[0]).html(ep[1]+1); // desativar a execulsao até concluir para evitar erro
 	                 			})
 							}
@@ -147,7 +142,6 @@ body{
         			time = setTimeout(function(){
         				var txt = $(".buscaMal").val();
         				$http.get("./API/MALanimeSearch.php?search="+txt).then(function(response){
-
         					//console.log(response.data);
         					if(response.data != ""){
             					//console.log(response.data.categories[0].items.length);
