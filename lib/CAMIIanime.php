@@ -7,6 +7,7 @@ require_once dirname(__DIR__).'/lib/BancoDeDados.php';
  */
 class CAMIIanime{
    private $bd;
+   public $dataAnime;
    
    public function myList($user, $json=false){
        $this->bd = new BancoDeDados();
@@ -38,9 +39,9 @@ class CAMIIanime{
    public function addAnimeLista($anime){
        $this->bd = new BancoDeDados();
        
-       $sql = "INSERT INTO MINHALISTA(MINCLIENTE, MINANIME, MINEP, MINSITUACAO) VALUES (1,?,?,?)";
+       $sql = "INSERT INTO MINHALISTA(MINCLIENTE,MINANIME,MINSITUACAO,MININICIO,MINFINAL) VALUES (1,?,?,NOW(),?)";
        
-       if($this->bd->query($sql,[$anime,0,1])){
+       if($this->bd->query($sql,[$anime,1,'NULL'])){
            return true;
        }
        return false;
@@ -63,6 +64,38 @@ class CAMIIanime{
        $sql = "SELECT * FROM ANIMEASSISTIDO WHERE  AASUSER=? AND AASANIME=?";
        if ($this->bd->querySelect($sql,[1,$anime])) {
            return $this->bd->ResultadosASSOCAll();
+       }
+       return FALSE;
+   }
+   
+   public function get1AnimeMyList($anime){
+       $this->bd = new BancoDeDados();
+      // $sql = "SELECT * FROM MINHALISTA LEFT JOIN ANIME ON ANICOD=MINANIME WHERE MINCLIENTE=1 AND MINANIME=?";
+       $sql = "SELECT *,COUNT(ASSEP) AS EP FROM MINHALISTA LEFT JOIN ANIME ON ANICOD=MINANIME LEFT JOIN ANIMEASSISTIDO ON MINCLIENTE=AASUSER AND ANICOD=AASANIME WHERE MINCLIENTE=1 AND MINANIME=? GROUP BY MINANIME";
+       
+       if ($this->bd->querySelect($sql,[$anime])) {
+           $this->dataAnime = $this->bd->ResultadosASSOC();
+           return true;
+       }
+       return false;
+   }
+   
+   public function getEpAnimeList($anime){
+       $this->bd = new BancoDeDados();
+       $sql = "SELECT ASSEP AS EP,ASSDATA AS DATA FROM ANIMEASSISTIDO WHERE AASUSER=? AND AASANIME=?";
+       if ($this->bd->querySelect($sql,[1,$anime])) {
+           $this->dataAnime = $this->bd->ResultadosASSOCAll();
+           return true;
+       }
+       return false;
+   }
+   
+   public function animeUpdateLista($sit,$dI,$dF,$anime){
+       $this->bd = new BancoDeDados();
+       $sql = "UPDATE MINHALISTA SET MINSITUACAO=?,MININICIO=?,MINFINAL=? WHERE MINCLIENTE=1 AND MINANIME=?";
+
+       if ($this->bd->query($sql,[$sit,$dI,$dF,$anime])) {
+           return true;
        }
        return FALSE;
    }

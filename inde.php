@@ -42,6 +42,41 @@ body{
     		<div class="col-md-12 ">
             	<anime></anime>
             	<malsearch></malsearch>
+            	<form action="">
+            		<div class="form-row">
+            			
+            			<div class="form-group col-md-12">
+            				<label for="data">Status</label>
+            				<input type="date" class="form-control">
+            			</div>
+            			
+            	
+            			
+            		</div>
+            	</form>
+            	<button class="btn btn-primary " type="button" data-toggle="collapse" data-target="#coallapseExample" aria-expanded="false" aria-controls="collapseExample">
+						Episódios
+					</button>
+					<div class="collapse" id="coallapseExample">
+						<div class="card card-body">
+							<!-- box -->
+							<div class="row" >
+    							<div class="form-group col">
+                    				<label for="ep" >Episódio</label> 
+                    			</div>
+                    			<div class="form-group col">
+                                      <input type="number" class="form-control" id="ep" min="0"  >
+                    			</div>
+                    			<div class="form-group col">
+                    				<label for="ep" >Data</label> 
+                    			</div>
+                    			<div class="form-group col">
+                                      <input type="date" id="epTotal" class="form-control"  >
+                    			</div>
+                			</div>
+                			<!-- box -->
+						</div>
+					</div>
     		</div>
     	</div>
     	
@@ -49,6 +84,10 @@ body{
 </div>	
 
 <script type="text/javascript">
+//remover sanitize
+	
+	
+	
 	var app = angular.module('CAMII',['ngSanitize']);
 	app.controller('camiiCtr', function($scope, $http){
 
@@ -122,6 +161,57 @@ body{
 	                 			})
 							}
         				}
+        				//##### Editar info anime na lista
+        				$scope.editarAnimeLs = function(event) {
+ 							//alert(event.target.value);
+ 							var anime = event.target.value;
+
+							$http.get("./API/get1AnimeInfoList.php?anime="+anime).then(function(response){
+								console.log(response.data);
+								$scope.nome = response.data.ANINOME;
+								$scope.cod = anime;
+								$('#status').val(response.data.MINSITUACAO);
+								$('#ep').attr("max", response.data.ANIEPI);
+								$('#ep').val(response.data.EP);
+								$('#epTotal').val(response.data.ANIEPI);
+								
+								var dateStr=response.data.MININICIO;
+								$("#dataI").val(dateStr);
+
+								var datefStr=response.data.MINFINAL;
+								$("#dataF").val(datefStr);
+
+                 			})
+                 			//## get Episodios DE um certo anime assistido
+                 			$http.get("./API/getEpAnimeList.php?anime="+anime).then(function(response){
+								console.log(response.data);
+								for(i=0; i<response.data.length;i++){
+									//console.log(response.data[i]);
+									var tx = response.data[i];
+									
+									response.data[i].texto = tx;
+								}
+								$scope.episodios = response.data	;
+
+                 			})
+						}
+						//##### Save Editar Anime
+						$scope.saveEditarAnime = function(){
+							
+							$("#ep").val();
+							var anime = $("#cod").val();
+							var sit = $("#status").val();
+							var dI = $("#dataI").val();
+							var dF = $("#dataF").val();
+							$http.get("./API/animeUpdateList.php?anime="+anime+"&sit="+sit+"&dI="+dI+"&dF="+dF).then(function(response){
+								console.log(response.data);
+								if(response.data.sit == 1){
+									$('#ModalEditar').modal('toggle');
+								}		
+                 			})
+
+						}
+						
     				}); 
     		  }],
     		  templateUrl: './template/animeLSitem.html'
@@ -155,8 +245,9 @@ body{
 							//### ADD novo anime evento
         					$scope.addNewAnimeBTN = function(event) {
 								console.log(event.target.value);
-								var an = "";
+								var an = event.target.value;
 								$http.get("./API/saveNewAnime.php?cod="+an).then(function(response){
+									console.log(response.data);
 									if(response.data.sit == 1){
 										alert(10);
 									}		
