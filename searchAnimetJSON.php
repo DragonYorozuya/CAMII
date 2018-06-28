@@ -1,5 +1,4 @@
 <?php
-
 if (isset($_GET['search']) && trim($_GET['search'])!=""){
 
     require_once 'lib/CAMIIanime.php';

@@ -1,0 +1,107 @@
+<div>
+<table class="table table-striped table-dark">
+    <thead class="bg-success">
+      <tr>
+        <th scope="col">#</th>
+        <th scope="col">Anime</th>
+        <th scope="col">Episódios</th>
+        <th></th>
+      </tr>
+    </thead>
+    <tbody >
+		<tr ng-repeat="x in camiiMen">
+		  <th scope="row"><div class="sit"></div>{{x.a}}</th>
+		  <td>{{ x.ANINOME }}</td>
+		  <td>
+			<span class="ep">{{x.EP}}</span>/<span class="epMax">{{ x.ANIEPI }}</span>
+	  		<button class="btn btn-light" value='{{x.ANICOD}}' ng-click="addMais1BTN($event)">+</button>
+		  </td>
+		  <td>
+		  	<button class="btn btn-danger" value='{{x.ANICOD}}' data-toggle="modal" data-target="#ModalEditar"
+		  	ng-click="editarAnimeLs($event)">Editar</button>
+		  </td>
+		</tr>
+	</tbody> 
+</table>
+	<!-- Modal -->
+	<div class="modal fade" id="ModalEditar" tabindex="-1" role="dialog" aria-labelledby="ModalEditar" aria-hidden="true">
+	  <div class="modal-dialog modal-lg" role="document">
+	    <div class="modal-content">
+	      <div class="modal-header">
+	        <h5 class="modal-title" id="exampleModalLabel">{{nome}}</h5>
+	        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+	          <span aria-hidden="true">&times;</span>
+	        </button>
+	      </div>
+	      <div class="modal-body editarbox">
+	     	
+	     	
+	     	<input id="cod" value="{{cod}}" type="hidden">
+	     	<form >
+            		<div class="form-row">
+            			<div class="form-group col-md-12">
+            				<label for="status">Status</label>
+            				<select id="status" class="form-control">
+            					<option value="1">Assistindo</option>
+            					<option value="2">Completo</option>
+            					<option value="3">Pausado</option>
+            					<option value="4">Dropado</option>
+            					<option value="6">Quero Assistir</option>
+            				</select>
+            			</div>
+            			<div class="form-group col">
+            				<label for="ep" >Episódios Assistidos</label> 
+            			</div>
+            			<div class="form-group col">
+                              <input type="number" class="form-control" id="ep" min="0"  >
+            			</div>
+            			<div class="form-group col">
+                              <input type="text" id="epTotal" class="form-control-plaintext" value="/ a" readonly >
+            			</div>
+            			
+            			<div class="form-group col-md-12">
+            				<label for="dataI">Data de Início</label>
+            				<input id="dataI" type="date" class="form-control">
+            			</div>
+            			<div class="form-group col-md-12">
+            				<label for="dataF">Data de Término</label>
+            				<input id="dataF" type="date" class="form-control">
+            			</div>
+            		</div>
+            	</form>
+            	<div class="col-md-12 text-center">
+					<button class="btn btn-primary " type="button" data-toggle="collapse" data-target="#collapseExample" aria-expanded="false" aria-controls="collapseExample">
+						Episódios
+					</button>
+					<div class="collapse" id="collapseExample">
+						<div class="card card-body">
+							
+                			<table class="table table-striped table-dark">
+							    <thead class="bg-success">
+							      <tr>
+							        <th scope="col">Episódio</th>
+							        <th scope="col">Data</th>
+							      </tr>
+							    </thead>
+							    <tbody >
+									<tr ng-repeat="x in episodios">
+									  <th scope="row">{{x.EP}}</th>
+									  <td><div class="form-group col">
+                                      	<input type="date" id="ep{{x.EP}}" class="form-control" value="{{x.DATA}}" >
+                    				</div></td>
+									</tr>
+								</tbody> 
+							</table>
+                			
+						</div>
+					</div>
+				</div>
+	       </div>
+	       <div class="modal-footer">
+	         <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+	         <button type="button" class="btn btn-primary" ng-click="saveEditarAnime()">Save</button>
+	       </div>
+	     </div>
+	   </div>
+	 </div>
+</div>
