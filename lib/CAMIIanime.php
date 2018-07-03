@@ -59,6 +59,21 @@ class CAMIIanime{
        return false;    
    }
    
+   public function add1epStatusCompleto($anime,$ep) {
+       $this->bd = new BancoDeDados();
+       if ($this->epCadastradoVerifica($anime, $ep)) {
+           $sql = "INSERT INTO ANIMEASSISTIDO(AASUSER, AASANIME, ASSEP, ASSDATA) VALUES (?,?,?,NOW())";
+           if ($this->bd->query($sql,[1,$anime,$ep])) {
+               $sql1 = "UPDATE MINHALISTA SET MINSITUACAO=?,MINFINAL=NOW() WHERE MINCLIENTE=? AND MINANIME=?";
+               if ($this->bd->query($sql1,[2,1,$anime])) {
+                   return true;
+               }
+           }
+           return 2;
+       }
+       return false;
+   }
+   
    public function animeEpAssistido($anime) {
        $this->bd = new BancoDeDados();
        $sql = "SELECT * FROM ANIMEASSISTIDO WHERE  AASUSER=? AND AASANIME=?";
@@ -95,9 +110,34 @@ class CAMIIanime{
        $sql = "UPDATE MINHALISTA SET MINSITUACAO=?,MININICIO=?,MINFINAL=? WHERE MINCLIENTE=1 AND MINANIME=?";
 
        if ($this->bd->query($sql,[$sit,$dI,$dF,$anime])) {
-           return true;
+           return TRUE;
        }
        return FALSE;
+   }
+   
+   public function epiUpdateList($anime,$ep,$data){
+       $this->bd = new BancoDeDados();
+       $sql = "UPDATE ANIMEASSISTIDO SET ASSDATA=? WHERE AASUSER=1 AND AASANIME =? AND ASSEP=?";
+       
+       if ($this->bd->query($sql,[$data,$anime,$ep])) {
+           return TRUE;
+       }
+       return FALSE;
+   }
+   
+   // 
+   
+   public function deletAnimeList($anime) {
+       $this->bd = new BancoDeDados();
+       
+       $sql = "DELETE FROM MINHALISTA WHERE MINCLIENTE = ? AND MINANIME = ?";
+       if ($this->bd->query($sql,[1,$anime])) {
+           $sql1 = "DELETE FROM ANIMEASSISTIDO WHERE AASUSER = 1 AND AASANIME = 225";
+           if ($this->bd->query($sql1,[1,$anime])) {
+               return true;
+           }
+       }
+       return false;
    }
    
    /**

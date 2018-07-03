@@ -81,18 +81,23 @@
 							      <tr>
 							        <th scope="col">Episódio</th>
 							        <th scope="col">Data</th>
+							        <th scope="col">Option</th>
 							      </tr>
 							    </thead>
 							    <tbody >
 									<tr ng-repeat="x in episodios">
 									  <th scope="row">{{x.EP}}</th>
-									  <td><div class="form-group col">
-                                      	<input type="date" id="ep{{x.EP}}" class="form-control" value="{{x.DATA}}" >
-                    				</div></td>
+									  	<td>
+									  	<div class="form-group col">
+                                      		<input type="date" id="epData{{x.EP}}" name="{{x.EP}}" ng-click="editEpData($event)" class="form-control" value="{{x.DATA}}" >
+                    					</div>
+	                    				</td>
+	                    				<td>
+										  	<button class="btn btn-primary d-none" value="{{x.EP}}" id="btnEp{{x.EP}}" ng-click="saveEditEp($event)" >Save</button>										
+	                    				</td>
 									</tr>
-								</tbody> 
+								</tbody>
 							</table>
-                			
 						</div>
 					</div>
 				</div>
