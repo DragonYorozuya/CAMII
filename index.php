@@ -42,41 +42,6 @@ body{
     		<div class="col-md-12 ">
             	<anime></anime>
             	<malsearch></malsearch>
-            	<form action="">
-            		<div class="form-row">
-            			
-            			<div class="form-group col-md-12">
-            				<label for="data">Status</label>
-            				<input type="date" class="form-control">
-            			</div>
-            			
-            	
-            			
-            		</div>
-            	</form>
-            	<button class="btn btn-primary " type="button" data-toggle="collapse" data-target="#coallapseExample" aria-expanded="false" aria-controls="collapseExample">
-						Episódios
-					</button>
-					<div class="collapse" id="coallapseExample">
-						<div class="card card-body">
-							<!-- box -->
-							<div class="row" >
-    							<div class="form-group col">
-                    				<label for="ep" >Episódio</label> 
-                    			</div>
-                    			<div class="form-group col">
-                                      <input type="number" class="form-control" id="ep" min="0"  >
-                    			</div>
-                    			<div class="form-group col">
-                    				<label for="ep" >Data</label> 
-                    			</div>
-                    			<div class="form-group col">
-                                      <input type="date" id="epTotal" class="form-control"  >
-                    			</div>
-                			</div>
-                			<!-- box -->
-						</div>
-					</div>
     		</div>
     	</div>
     	
@@ -154,12 +119,25 @@ body{
     						 	epMax[0] = $(event.target).parent().children('.epMax');
     						 	epMax[1]= parseInt($(epMax[0]).html());
     						 	var anime = event.target.value;
-							if( ep[1] < epMax[1]){ //arrumar
+							if( (ep[1]+1) < epMax[1]){ //arrumar
 								$http.get("./API/save1ep.php?anime="+anime+"&ep="+(ep[1]+1)).then(function(response){
 									//alert(response.data.sit);
 									$(ep[0]).html(ep[1]+1); // desativar a execulsao até concluir para evitar erro
 	                 			})
+	                 			return;
 							}
+
+							if((ep[1]+1) == epMax[1]){
+								alert(ep[1]+1)
+								$http.get("./API/save1epStatusCompleto.php?anime="+anime+"&ep="+(ep[1]+1)).then(function(response){
+									//alert(response.data.sit);
+									$(ep[0]).html(ep[1]+1); // desativar a execulsao até concluir para evitar erro
+	                 			})
+								
+								return;
+							}
+							
+							
         				}
         				//##### Editar info anime na lista
         				$scope.editarAnimeLs = function(event) {
@@ -184,7 +162,7 @@ body{
                  			})
                  			//## get Episodios DE um certo anime assistido
                  			$http.get("./API/getEpAnimeList.php?anime="+anime).then(function(response){
-								console.log(response.data);
+								//console.log(response.data);
 								for(i=0; i<response.data.length;i++){
 									//console.log(response.data[i]);
 									var tx = response.data[i];
@@ -209,9 +187,29 @@ body{
 									$('#ModalEditar').modal('toggle');
 								}		
                  			})
-
 						}
-						
+
+						//##  Editar ep DATA abilitar btn
+						$scope.editEpData = function(event) {
+							var ep = $(event.target).attr("name");
+							var btnEp = $("#btnEp"+ep).removeClass("d-none");
+						}
+						//## SAVE editar Ep
+						$scope.saveEditEp = function(event) {
+							var ep = $(event.target).val();
+							var data = $("#epData"+ep).val();
+							var anime = $("#cod").val();
+							
+
+							$http.get("./API/animeUpdateEpList.php?anime="+anime+"&ep="+ep+"&d="+data).then(function(response){
+								console.log(response.data);
+								if(response.data.sit == 1){
+									alert(2);
+									//$('#ModalEditar').modal('toggle');
+								}		
+                 			})
+							
+						}
     				}); 
     		  }],
     		  templateUrl: './template/animeLSitem.html'
