@@ -114,6 +114,34 @@ class CAMIIanime{
        }
        return FALSE;
    }
+   public function updateAnimeLsCompleto($sit,$dI,$dF,$anime){
+       $this->bd = new BancoDeDados();
+       $sql = "UPDATE MINHALISTA SET MINSITUACAO=?,MININICIO=?,MINFINAL=? WHERE MINCLIENTE=1 AND MINANIME=?";
+       
+       $sql1= "SELECT ASSEP,ANIEPI FROM ANIMEASSISTIDO LEFT JOIN ANIME ON ANICOD=AASANIME WHERE AASUSER=? AND AASANIME = ?";
+       
+       if ($this->bd->query($sql1,[1,$anime])) {
+           $eps = $this->bd->ResultadosASSOCAll();
+           $arr = "";
+           for($i=1;$i<=$eps[0]['ANIEPI'];$i++)
+               $arr[$i]= $i;
+           foreach($eps as $ep )
+               unset($arr[$ep['ASSEP']]);
+           //var_dump($arr);
+           
+           $sql3 = "INSERT INTO ANIMEASSISTIDO(AASUSER, AASANIME, ASSEP, ASSDATA) VALUES ";
+           foreach ($arr as $ep){
+               $sql3 .= "(1,".$anime.",".$ep.",NOW()),";
+           }
+           //echo rtrim($sql3, ",");
+           if ($this->bd->query(rtrim($sql3, ","))) {
+               if ($this->bd->query($sql,[$sit,$dI,$dF,$anime])) {
+                   return TRUE;
+               }
+           }
+       }
+       return FALSE;
+   }
    
    public function epiUpdateList($anime,$ep,$data){
        $this->bd = new BancoDeDados();

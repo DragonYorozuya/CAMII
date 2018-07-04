@@ -137,8 +137,14 @@ body{
 								return;
 							}
 							
-							
+							$scope.filtroLista = {"MINSITUACAO" : 1};
         				}
+						
+						$scope.filtroListaF = function(x){
+							$scope.filtroLista = {"MINSITUACAO" : x};
+						}
+						
+						
         				//##### Editar info anime na lista
         				$scope.editarAnimeLs = function(event) {
  							//alert(event.target.value);
@@ -181,12 +187,24 @@ body{
 							var sit = $("#status").val();
 							var dI = $("#dataI").val();
 							var dF = $("#dataF").val();
-							$http.get("./API/animeUpdateList.php?anime="+anime+"&sit="+sit+"&dI="+dI+"&dF="+dF).then(function(response){
+							if(sit ==2){
+								alert(sit);
+								$http.get("./API/updateAnimeLsCompleto.php?anime="+anime+"&sit="+sit+"&dI="+dI+"&dF="+dF).then(function(response){
 								console.log(response.data);
 								if(response.data.sit == 1){
 									$('#ModalEditar').modal('toggle');
-								}		
-                 			})
+    								}		
+                     			})
+                     			
+                     			
+								return
+							}
+// 							$http.get("./API/animeUpdateList.php?anime="+anime+"&sit="+sit+"&dI="+dI+"&dF="+dF).then(function(response){
+// 								console.log(response.data);
+// 								if(response.data.sit == 1){
+// 									$('#ModalEditar').modal('toggle');
+// 								}		
+//                  			})
 						}
 
 						//##  Editar ep DATA abilitar btn
