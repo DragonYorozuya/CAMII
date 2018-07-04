@@ -118,10 +118,11 @@ class CAMIIanime{
        $this->bd = new BancoDeDados();
        $sql = "UPDATE MINHALISTA SET MINSITUACAO=?,MININICIO=?,MINFINAL=? WHERE MINCLIENTE=1 AND MINANIME=?";
        
-       $sql1= "SELECT ASSEP,ANIEPI FROM ANIMEASSISTIDO LEFT JOIN ANIME ON ANICOD=AASANIME WHERE AASUSER=? AND AASANIME = ?";
+       $sql1= "SELECT ASSEP,ANIEPI FROM ANIME LEFT JOIN ANIMEASSISTIDO ON ANICOD=AASANIME WHERE ANICOD= ? OR (AASUSER=? AND AASANIME=?)";
        
-       if ($this->bd->query($sql1,[1,$anime])) {
+       if ($this->bd->query($sql1,[$anime,1,$anime])) {
            $eps = $this->bd->ResultadosASSOCAll();
+           //var_dump($eps);
            $arr = "";
            for($i=1;$i<=$eps[0]['ANIEPI'];$i++)
                $arr[$i]= $i;
@@ -135,10 +136,11 @@ class CAMIIanime{
            }
            //echo rtrim($sql3, ",");
            if ($this->bd->query(rtrim($sql3, ","))) {
-               if ($this->bd->query($sql,[$sit,$dI,$dF,$anime])) {
-                   return TRUE;
-               }
+               
            }
+       }
+       if ($this->bd->query($sql,[$sit,$dI,$dF,$anime])) {
+           return TRUE;
        }
        return FALSE;
    }

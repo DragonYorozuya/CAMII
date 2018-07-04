@@ -15,7 +15,7 @@
     <tbody > 
 		<tr ng-repeat="x in camiiMen | filter : filtroLista ">
 		  <th scope="row"><div class="sit"></div>{{x.a}}</th>
-		  <td>{{ x.ANINOME }}</td>
+		  <td ng-bind-html="x.ANINOME"></td>
 		  <td>
 			<span class="ep">{{x.EP}}</span>/<span class="epMax">{{ x.ANIEPI }}</span>
 	  		<button class="btn btn-light" value='{{x.ANICOD}}' ng-click="addMais1BTN($event)">+</button>
@@ -32,7 +32,7 @@
 	  <div class="modal-dialog modal-lg" role="document">
 	    <div class="modal-content">
 	      <div class="modal-header">
-	        <h5 class="modal-title" id="exampleModalLabel">{{nome}}</h5>
+	        <h5 class="modal-title" id="exampleModalLabel" ng-bind-html="nome"></h5>
 	        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
 	          <span aria-hidden="true">&times;</span>
 	        </button>

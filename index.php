@@ -35,7 +35,7 @@ body{
     			Busca: <input type="text" class="busca" ng-change="busca($event)" ng-model="ftxt"><br /><br />
     			<span ng-repeat="x in bMen" >
     				<img alt="" src="./img/anime/{{x.ANIIMG}}.jpg">
-    				{{ x.ANINOME }}  <button value="{{ x.ANICOD }}" ng-click="addBTN($event)" style='display:{{x.a}}'>add</button><br/>
+    				<div ng-bind-html="x.ANINOME"></div>  <button value="{{ x.ANICOD }}" ng-click="addBTN($event)" style='display:{{x.a}}'>add</button><br/>
     			</span>
     		</div>
     			
@@ -73,7 +73,7 @@ body{
 						}
 						response.data[i].texto = tx;
 					}
-					$scope.bMen = response.data	;
+					$scope.bMen = response.data;
 				});
 			},1000);
 		}
@@ -199,12 +199,12 @@ body{
                      			
 								return
 							}
-// 							$http.get("./API/animeUpdateList.php?anime="+anime+"&sit="+sit+"&dI="+dI+"&dF="+dF).then(function(response){
-// 								console.log(response.data);
-// 								if(response.data.sit == 1){
-// 									$('#ModalEditar').modal('toggle');
-// 								}		
-//                  			})
+							$http.get("./API/animeUpdateList.php?anime="+anime+"&sit="+sit+"&dI="+dI+"&dF="+dF).then(function(response){
+								console.log(response.data);
+								if(response.data.sit == 1){
+									$('#ModalEditar').modal('toggle');
+								}		
+                 			})
 						}
 
 						//##  Editar ep DATA abilitar btn
