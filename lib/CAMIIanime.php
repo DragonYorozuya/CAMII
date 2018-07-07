@@ -13,7 +13,7 @@ class CAMIIanime{
        $this->bd = new BancoDeDados();
       // $sql = "SELECT * FROM MINHALISTA LEFT JOIN ANIME ON MINANIME=ANICOD WHERE MINCLIENTE=?";
 //       $sql = "SELECT *,COUNT(ASSEP) AS EP FROM MINHALISTA LEFT JOIN ANIME ON MINANIME=ANICOD LEFT JOIN ANIMEASSISTIDO ON MINANIME=AASANIME AND MINCLIENTE=AASUSER WHERE MINCLIENTE=? GROUP BY MINANIME";
-       $sql = "SELECT MINCLIENTE,ANICOD,MINSITUACAO,ANINOME,ANIEPI,ANITIPO,ANIIMG,ANISTATUS,ANIINICIO,ANIFINAL,ANIADAP,ANICI,ANIESTUDIO,COUNT(ASSEP) AS EP FROM MINHALISTA LEFT JOIN ANIME ON MINANIME=ANICOD LEFT JOIN ANIMEASSISTIDO ON MINANIME=AASANIME AND MINCLIENTE=AASUSER WHERE MINCLIENTE=? GROUP BY MINANIME";
+       $sql = "SELECT MINCLIENTE,ANICOD,MINSITUACAO,ANINOME,ANIEPI,ANITIPO,ANIIMG,ANISTATUS,ANIINICIO,ANIFINAL,ANIADAP,ANICI,ANIESTUDIO,COUNT(ASSEP) AS EP FROM MINHALISTA LEFT JOIN ANIME ON MINANIME=ANICOD LEFT JOIN ANIMEASSISTIDO ON MINANIME=AASANIME AND MINCLIENTE=AASUSER WHERE MINCLIENTE=? GROUP BY MINANIME ORDER BY ANINOME ASC";
        if($this->bd->querySelect($sql,[$user])){
            if($json == true){
                 return json_encode($this->bd->ResultadosASSOCAll(),true);
@@ -105,6 +105,25 @@ class CAMIIanime{
        return false;
    }
    
+   public function getStatAnimeLista(){
+       $this->bd = new BancoDeDados();
+       //$sql = "SELECT * FROM ANIMEASSISTIDO WHERE ASSDATA BETWEEN '2017-01-01' AND '2017-12-31' AND AASUSER=1";
+       $sql = "SELECT COUNT(*) AS ANIME,YEAR(ASSDATA) as DATA FROM ANIMEASSISTIDO WHERE AASUSER=? GROUP BY DATA ORDER BY DATA DESC";
+       //DATE_FORMAT( ASSDATA, '%e %b %Y')
+       if ($this->bd->querySelect($sql,[1])) {
+           $this->dataAnime['ANO'] =  $this->bd->ResultadosASSOCAll();
+           
+           $sql1 = "SELECT COUNT(AASUSER) AS ANIME, extract(year from ASSDATA) AS ANO, extract(month from ASSDATA) as MES FROM ANIMEASSISTIDO WHERE AASUSER=? GROUP BY ANO,MES ORDER BY ANO,MES";
+           if ($this->bd->querySelect($sql1,[1])) {
+               $this->dataAnime['MES'] =  $this->bd->ResultadosASSOCAll();
+           }
+           $this->dataAnime['META']["DIA"] = date('z')+1;
+           $this->dataAnime['META']["B"] = date('L');
+           return TRUE;
+       }
+       return false; 
+   }
+   
    public function animeUpdateLista($sit,$dI,$dF,$anime){
        $this->bd = new BancoDeDados();
        $sql = "UPDATE MINHALISTA SET MINSITUACAO=?,MININICIO=?,MINFINAL=? WHERE MINCLIENTE=1 AND MINANIME=?";
@@ -129,10 +148,14 @@ class CAMIIanime{
            foreach($eps as $ep )
                unset($arr[$ep['ASSEP']]);
            //var_dump($arr);
-           
+           $v = "'";
+           if(trim($dF) == ""){
+               $dF = "NOW()";
+               $v = "";
+           }    
            $sql3 = "INSERT INTO ANIMEASSISTIDO(AASUSER, AASANIME, ASSEP, ASSDATA) VALUES ";
            foreach ($arr as $ep){
-               $sql3 .= "(1,".$anime.",".$ep.",NOW()),";
+               $sql3 .= "(1,".$anime.",".$ep.",".$v.$dF.$v."),";
            }
            //echo rtrim($sql3, ",");
            if ($this->bd->query(rtrim($sql3, ","))) {

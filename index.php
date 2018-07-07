@@ -27,7 +27,6 @@ body{
 }
 </style>
 <body>
-
 <div class="container-fluid">
 	<div ng-app="CAMII" ng-controller="camiiCtr">
     	<div class="row">
@@ -42,16 +41,16 @@ body{
     		<div class="col-md-12 ">
             	<anime></anime>
             	<malsearch></malsearch>
+            	<stats></stats>
+            	
     		</div>
     	</div>
     	
 	</div>	
-</div>	
+</div>	<div class="bg-white">
 
 <script type="text/javascript">
 //remover sanitize
-	
-	
 	
 	var app = angular.module('CAMII',['ngSanitize']);
 	app.controller('camiiCtr', function($scope, $http){
@@ -101,6 +100,7 @@ body{
     		  controller: ['$scope', function m($scope) {
     			  $http.get("./myListJSON.php").then(function(response){
     					//console.log(response.data);
+    					$scope.filtroLista = {"MINSITUACAO" : 1}; // DEFINI a LISTA para os anime com status de assistindo
     					for(i=0; i<response.data.length;i++){
     						//console.log(response.data[i]);
     						var tx = response.data[i];
@@ -137,7 +137,7 @@ body{
 								return;
 							}
 							
-							$scope.filtroLista = {"MINSITUACAO" : 1};
+							
         				}
 						
 						$scope.filtroListaF = function(x){
@@ -175,7 +175,7 @@ body{
 									
 									response.data[i].texto = tx;
 								}
-								$scope.episodios = response.data	;
+								$scope.episodios = response.data;
 
                  			})
 						}
@@ -275,7 +275,39 @@ body{
             }],
             templateUrl: './template/animeBoxNewTL.html'
 		};
+	}])
+	.directive('stats',['$http',function($http){
+		//##### STATS
+		return{
+			restrict: 'AE',
+            replace: true,
+            transclude: true,
+            scope: {title: '@'},
+            controller: ['$scope', function m($scope) {
+				//$scope.a = 1;
+
+				$http.get("./API/getAnimeStats.php?anime=a").then(function(response){
+					console.log(response.data);
+					// ### ANO
+					$scope.statsAno = response.data.ANO;
+
+					//### DIAS FALTADO
+					var diaFinal =  365-response.data.META.DIA;
+					if(response.data.META.B == "1" && response.data.META.DIA>59)
+						diaFinal++;
+					$scope.diafalta = diaFinal;
+					var epT = response.data.ANO[0].ANIME;
+					$scope.epAssistidos = epT;
+					$scope.epTotal = 1000-epT;
+					$scope.epDia = (1000-epT)/diaFinal;
+     			})
+
+				
+            }],
+            templateUrl: './template/statsTL.html' 
+		};
 	}]);
+	
 	</script>
 </body>
 </html>
