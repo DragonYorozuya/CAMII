@@ -47,7 +47,7 @@ body{
     	</div>
     	
 	</div>	
-</div>	<div class="bg-white">
+</div>	
 
 <script type="text/javascript">
 //remover sanitize
@@ -93,145 +93,144 @@ body{
 	}).directive('anime', ['$http', function($http) { 
 		//### GET ANIME LISTA
 		  return {
-    		  restrict: 'AE',
-    		  replace: true,
-    		  transclude: true,
-    	      scope: {title: '@'},
-    		  controller: ['$scope', function m($scope) {
-    			  $http.get("./myListJSON.php").then(function(response){
-    					//console.log(response.data);
-    					$scope.filtroLista = {"MINSITUACAO" : 1}; // DEFINI a LISTA para os anime com status de assistindo
-    					for(i=0; i<response.data.length;i++){
-    						//console.log(response.data[i]);
-    						var tx = response.data[i];
-    						tx.a = i+1;
-    						response.data[i].texto = tx;
-    					}
-    					$scope.camiiMen = response.data	;
+            restrict: 'AE',
+            replace: true,
+            transclude: true,
+            scope: {title: '@'},
+            controller: ['$scope', function m($scope) {
+				$http.get("./myListJSON.php").then(function(response){
+    				//          A,C,P,D,  F
+    				var tA = [0,0,0,0,0,0,0];
+  					for(i=0; i<response.data.length;i++){
+   					//console.log(response.data[i]);
+  						var tx = response.data[i];
+  						tx.a = i+1;
+  						response.data[i].texto = tx;
+						switch(response.data[i].MINSITUACAO){
+							case '1': tA[1] += parseInt(response.data[i].EP); break;
+							case '2': tA[2] += parseInt(response.data[i].EP); break;
+							case '3': tA[3] += parseInt(response.data[i].EP); break;
+							case '4': tA[4] += parseInt(response.data[i].EP); break;
+							case '6': tA[6] += parseInt(response.data[i].EP);
+						};
+  					}
 
-    					//#### ADD 1 ep
-    					$scope.addMais1BTN = function(event) { 
-        					//console.log( event.target.value);
-        					var ep = new Array();
-    						 	ep[0] = $(event.target).parent().children('.ep');
-    						 	ep[1]= parseInt($(ep[0]).html());
-    						 	var epMax = new Array();
-    						 	epMax[0] = $(event.target).parent().children('.epMax');
-    						 	epMax[1]= parseInt($(epMax[0]).html());
-    						 	var anime = event.target.value;
-							if( (ep[1]+1) < epMax[1]){ //arrumar
-								$http.get("./API/save1ep.php?anime="+anime+"&ep="+(ep[1]+1)).then(function(response){
-									//alert(response.data.sit);
-									$(ep[0]).html(ep[1]+1); // desativar a execulsao até concluir para evitar erro
-	                 			})
-	                 			return;
-							}
+					//FUNÇÃO de filtro
+    				 $scope.filtroListaF = function(x){
+						$scope.filtroLista = {"MINSITUACAO" : x};
+						$("#animeEpTotal").html(tA[x]);
+					}
 
-							if((ep[1]+1) == epMax[1]){
-								alert(ep[1]+1)
-								$http.get("./API/save1epStatusCompleto.php?anime="+anime+"&ep="+(ep[1]+1)).then(function(response){
-									//alert(response.data.sit);
-									$(ep[0]).html(ep[1]+1); // desativar a execulsao até concluir para evitar erro
-	                 			})
-								
-								return;
-							}
-							
-							
-        				}
+					$scope.filtroListaF(1); // DEFINI a LISTA para os anime com status de assistindo
+					$scope.camiiMen = response.data;
+					$scope.totalEpisodios = tA[0];	
+    			}); 
+    			
+    			//##### Editar info anime na lista
+  				$scope.editarAnimeLs = function(event) {
+					var anime = event.target.value;
+					$http.get("./API/get1AnimeInfoList.php?anime="+anime).then(function(response){
+						console.log(response.data);
+						$scope.nome = response.data.ANINOME;
+						$scope.cod = anime;
+						$('#status').val(response.data.MINSITUACAO);
+						$('#ep').attr("max", response.data.ANIEPI);
+						$('#ep').val(response.data.EP);
+						$('#epTotal').val(response.data.ANIEPI);
 						
-						$scope.filtroListaF = function(x){
-							$scope.filtroLista = {"MINSITUACAO" : x};
+						var dateStr=response.data.MININICIO;
+						$("#dataI").val(dateStr);
+
+						var datefStr=response.data.MINFINAL;
+						$("#dataF").val(datefStr);
+
+       				});
+           			//## get Episodios DE um certo anime assistido
+           			$http.get("./API/getEpAnimeList.php?anime="+anime).then(function(response){
+						for(i=0; i<response.data.length;i++){
+							var tx = response.data[i];	
+							response.data[i].texto = tx;
 						}
-						
-						
-        				//##### Editar info anime na lista
-        				$scope.editarAnimeLs = function(event) {
- 							//alert(event.target.value);
- 							var anime = event.target.value;
+						$scope.episodios = response.data;
+           			})
+				}	
+    			//##### Save Editar Anime
+				$scope.saveEditarAnime = function(){
+					$("#ep").val();
+					var anime = $("#cod").val();
+					var sit = $("#status").val();
+					var dI = $("#dataI").val();
+					var dF = $("#dataF").val();
+					if(sit ==2){
+						alert(sit);
+						$http.get("./API/updateAnimeLsCompleto.php?anime="+anime+"&sit="+sit+"&dI="+dI+"&dF="+dF).then(function(response){
+						console.log(response.data);
+						if(response.data.sit == 1){
+							$('#ModalEditar').modal('toggle');
+							}		
+           			})
+						return
+					}
+					$http.get("./API/animeUpdateList.php?anime="+anime+"&sit="+sit+"&dI="+dI+"&dF="+dF).then(function(response){
+						console.log(response.data);
+						if(response.data.sit == 1){
+							$('#ModalEditar').modal('toggle');
+						}		
+       				})
+				}
+				//#### ADD 1 ep
+				$scope.addMais1BTN = function(event) { 
+				//console.log( event.target.value);
+				var ep = new Array();
+					 	ep[0] = $(event.target).parent().children('.ep');
+					 	ep[1]= parseInt($(ep[0]).html());
+					 	var epMax = new Array();
+					 	epMax[0] = $(event.target).parent().children('.epMax');
+					 	epMax[1]= parseInt($(epMax[0]).html());
+					 	var anime = event.target.value;
+					 	//console.log(epMax);
+					 	if(epMax[1]==0){
+					 		console.log(ep);
+  					}
+					if( (ep[1]+1) < epMax[1] || epMax[1]==0){ //arrumar
+						$http.get("./API/save1ep.php?anime="+anime+"&ep="+(ep[1]+1)).then(function(response){
+							//alert(response.data.sit);
+							$(ep[0]).html(ep[1]+1); // desativar a execulsao até concluir para evitar erro
+           				});
+           				return;
+					}
 
-							$http.get("./API/get1AnimeInfoList.php?anime="+anime).then(function(response){
-								console.log(response.data);
-								$scope.nome = response.data.ANINOME;
-								$scope.cod = anime;
-								$('#status').val(response.data.MINSITUACAO);
-								$('#ep').attr("max", response.data.ANIEPI);
-								$('#ep').val(response.data.EP);
-								$('#epTotal').val(response.data.ANIEPI);
-								
-								var dateStr=response.data.MININICIO;
-								$("#dataI").val(dateStr);
-
-								var datefStr=response.data.MINFINAL;
-								$("#dataF").val(datefStr);
-
-                 			})
-                 			//## get Episodios DE um certo anime assistido
-                 			$http.get("./API/getEpAnimeList.php?anime="+anime).then(function(response){
-								//console.log(response.data);
-								for(i=0; i<response.data.length;i++){
-									//console.log(response.data[i]);
-									var tx = response.data[i];
-									
-									response.data[i].texto = tx;
-								}
-								$scope.episodios = response.data;
-
-                 			})
-						}
-						//##### Save Editar Anime
-						$scope.saveEditarAnime = function(){
-							
-							$("#ep").val();
-							var anime = $("#cod").val();
-							var sit = $("#status").val();
-							var dI = $("#dataI").val();
-							var dF = $("#dataF").val();
-							if(sit ==2){
-								alert(sit);
-								$http.get("./API/updateAnimeLsCompleto.php?anime="+anime+"&sit="+sit+"&dI="+dI+"&dF="+dF).then(function(response){
-								console.log(response.data);
-								if(response.data.sit == 1){
-									$('#ModalEditar').modal('toggle');
-    								}		
-                     			})
-                     			
-                     			
-								return
-							}
-							$http.get("./API/animeUpdateList.php?anime="+anime+"&sit="+sit+"&dI="+dI+"&dF="+dF).then(function(response){
-								console.log(response.data);
-								if(response.data.sit == 1){
-									$('#ModalEditar').modal('toggle');
-								}		
-                 			})
-						}
-
-						//##  Editar ep DATA abilitar btn
-						$scope.editEpData = function(event) {
-							var ep = $(event.target).attr("name");
-							var btnEp = $("#btnEp"+ep).removeClass("d-none");
-						}
-						//## SAVE editar Ep
-						$scope.saveEditEp = function(event) {
-							var ep = $(event.target).val();
-							var data = $("#epData"+ep).val();
-							var anime = $("#cod").val();
-							
-
-							$http.get("./API/animeUpdateEpList.php?anime="+anime+"&ep="+ep+"&d="+data).then(function(response){
-								console.log(response.data);
-								if(response.data.sit == 1){
-									alert(2);
-									//$('#ModalEditar').modal('toggle');
-								}		
-                 			})
-							
-						}
-    				}); 
-    		  }],
-    		  templateUrl: './template/animeLSitem.html'
-		  };
+					if((ep[1]+1) == epMax[1]){
+						alert(ep[1]+1)
+						$http.get("./API/save1epStatusCompleto.php?anime="+anime+"&ep="+(ep[1]+1)).then(function(response){
+							//alert(response.data.sit);
+							$(ep[0]).html(ep[1]+1); // desativar a execulsao até concluir para evitar erro
+           				})
+						return;
+					}	
+  				}
+      				
+				//##  Editar ep DATA abilitar btn
+				$scope.editEpData = function(event) {
+					var ep = $(event.target).attr("name");
+					var btnEp = $("#btnEp"+ep).removeClass("d-none");
+				}
+				//## SAVE editar Ep
+				$scope.saveEditEp = function(event) {
+					var ep = $(event.target).val();
+					var data = $("#epData"+ep).val();
+					var anime = $("#cod").val();
+					$http.get("./API/animeUpdateEpList.php?anime="+anime+"&ep="+ep+"&d="+data).then(function(response){
+						console.log(response.data);
+						if(response.data.sit == 1){
+							$(event.target).addClass("d-none");
+						}		
+     				})
+				}
+				///######## FIM
+			}],
+			templateUrl: './template/animeLSitem.html'
+		};
 	}])
 	.directive('malsearch', ['$http', function($http) { 
 		//### GET ANIME LISTA
@@ -300,6 +299,15 @@ body{
 					$scope.epAssistidos = epT;
 					$scope.epTotal = 1000-epT;
 					$scope.epDia = (1000-epT)/diaFinal;
+
+					//#### ANOS COMPLETOS
+					$scope.statsAnoComp = response.data.COMPLETO;
+					var AC = 0;
+					for(i=0;i<response.data.COMPLETO.length;i++){
+						AC += parseInt(response.data.COMPLETO[i].ANIMECOMP);
+					}
+					$scope.totalCompleto = AC;
+					
      			})
 
 				

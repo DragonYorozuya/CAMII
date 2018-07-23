@@ -2,6 +2,8 @@
 <button ng-click="filtroListaF(1)" class="btn btn-success">Assistindo</button>
 <button ng-click="filtroListaF(2)" class="btn btn-success">Completos</button>
 <button ng-click="filtroListaF(3)" class="btn btn-success">Pausado</button>
+<button ng-click="filtroListaF(4)" class="btn btn-success">Dropado</button>
+<button ng-click="filtroListaF(6)" class="btn btn-success">Quero Assistir</button>
 
 <table class="table table-striped table-dark">
     <thead class="bg-success">
@@ -13,7 +15,7 @@
       </tr>
     </thead>
     <tbody > 
-		<tr ng-repeat="x in camiiMen | filter : filtroLista ">
+		<tr ng-repeat="x in camiiMen  | filter : filtroLista ">
 		  <th scope="row"><div class="sit"></div>{{x.a}}</th>
 		  <td ng-bind-html="x.ANINOME"></td>
 		  <td>
@@ -24,6 +26,10 @@
 		  	<button class="btn btn-danger" value='{{x.ANICOD}}' data-toggle="modal" data-target="#ModalEditar"
 		  	ng-click="editarAnimeLs($event)">Editar</button>
 		  </td>
+		</tr>
+		<tr class="bg-info">
+			<td colspan="2">Total</td>
+			<td colspan="2" id="animeEpTotal">{{totalEpisodios}}</td>
 		</tr>
 	</tbody> 
 </table>

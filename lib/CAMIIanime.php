@@ -116,6 +116,11 @@ class CAMIIanime{
            $sql1 = "SELECT COUNT(AASUSER) AS ANIME, extract(year from ASSDATA) AS ANO, extract(month from ASSDATA) as MES FROM ANIMEASSISTIDO WHERE AASUSER=? GROUP BY ANO,MES ORDER BY ANO,MES";
            if ($this->bd->querySelect($sql1,[1])) {
                $this->dataAnime['MES'] =  $this->bd->ResultadosASSOCAll();
+               
+               $sql2 = "SELECT COUNT(*) AS ANIMECOMP,YEAR(MINFINAL) AS ANOCOMP FROM MINHALISTA WHERE MINCLIENTE=? AND MINSITUACAO=2 GROUP BY ANOCOMP";
+               if ($this->bd->querySelect($sql2,[1])) {
+                   $this->dataAnime['COMPLETO'] = $this->bd->ResultadosASSOCAll();
+               }
            }
            $this->dataAnime['META']["DIA"] = date('z')+1;
            $this->dataAnime['META']["B"] = date('L');
