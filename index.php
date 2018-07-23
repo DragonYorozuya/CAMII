@@ -98,34 +98,44 @@ body{
             transclude: true,
             scope: {title: '@'},
             controller: ['$scope', function m($scope) {
-				$http.get("./myListJSON.php").then(function(response){
-    				//          A,C,P,D,  F
-    				var tA = [0,0,0,0,0,0,0];
-  					for(i=0; i<response.data.length;i++){
-   					//console.log(response.data[i]);
-  						var tx = response.data[i];
-  						tx.a = i+1;
-  						response.data[i].texto = tx;
-						switch(response.data[i].MINSITUACAO){
-							case '1': tA[1] += parseInt(response.data[i].EP); break;
-							case '2': tA[2] += parseInt(response.data[i].EP); break;
-							case '3': tA[3] += parseInt(response.data[i].EP); break;
-							case '4': tA[4] += parseInt(response.data[i].EP); break;
-							case '6': tA[6] += parseInt(response.data[i].EP);
-						};
-  					}
 
-					//FUNÇÃO de filtro
-    				 $scope.filtroListaF = function(x){
-						$scope.filtroLista = {"MINSITUACAO" : x};
-						$("#animeEpTotal").html(tA[x]);
-					}
-
-					$scope.filtroListaF(1); // DEFINI a LISTA para os anime com status de assistindo
-					$scope.camiiMen = response.data;
-					$scope.totalEpisodios = tA[0];	
-    			}); 
-    			
+				function exeListaAnime(){
+    				$http.get("./myListJSON.php").then(function(response){
+        				//          A,C,P,D,  F
+        				var tA = [0,0,0,0,0,0,0];
+      					for(i=0; i<response.data.length;i++){
+       					console.log(response.data[i]);
+      						var tx = response.data[i];
+      						tx.a = i+1;
+      						response.data[i].texto = tx;
+    						switch(response.data[i].MINSITUACAO){
+    							case '1': tA[1] += parseInt(response.data[i].EP); break;
+    							case '2': tA[2] += parseInt(response.data[i].EP); break;
+    							case '3': tA[3] += parseInt(response.data[i].EP); break;
+    							case '4': tA[4] += parseInt(response.data[i].EP); break;
+    							case '6': tA[6] += parseInt(response.data[i].EP);
+    						};
+      					}
+    
+    					//FUNÇÃO de filtro
+        				 $scope.filtroListaF = function(x=null){
+							if(x!=null){
+								$scope.filtroLista = {"MINSITUACAO" : x};
+								$("#animeEpTotal").html(tA[x]);
+							}	
+    					}
+    
+    					$scope.filtroListaF(1); // DEFINI a LISTA para os anime com status de assistindo
+    					$scope.camiiMen = response.data;
+    					$scope.totalEpisodios = tA[0];	
+        			}); 
+				}
+				exeListaAnime();
+			
+				$scope.reloadListaAnime = function($event){
+					exeListaAnime();
+				};
+				
     			//##### Editar info anime na lista
   				$scope.editarAnimeLs = function(event) {
 					var anime = event.target.value;
@@ -175,6 +185,7 @@ body{
 						console.log(response.data);
 						if(response.data.sit == 1){
 							$('#ModalEditar').modal('toggle');
+							exeListaAnime();
 						}		
        				})
 				}
@@ -194,17 +205,18 @@ body{
   					}
 					if( (ep[1]+1) < epMax[1] || epMax[1]==0){ //arrumar
 						$http.get("./API/save1ep.php?anime="+anime+"&ep="+(ep[1]+1)).then(function(response){
-							//alert(response.data.sit);
-							$(ep[0]).html(ep[1]+1); // desativar a execulsao até concluir para evitar erro
+							if(response.data.sit ==1){
+								exeListaAnime();
+							}
            				});
            				return;
 					}
 
 					if((ep[1]+1) == epMax[1]){
-						alert(ep[1]+1)
 						$http.get("./API/save1epStatusCompleto.php?anime="+anime+"&ep="+(ep[1]+1)).then(function(response){
-							//alert(response.data.sit);
-							$(ep[0]).html(ep[1]+1); // desativar a execulsao até concluir para evitar erro
+							if(response.data.sit ==1){
+								exeListaAnime();
+							}
            				})
 						return;
 					}	
@@ -284,33 +296,36 @@ body{
             scope: {title: '@'},
             controller: ['$scope', function m($scope) {
 				//$scope.a = 1;
+				$scope.getStats = function(event){
+					$http.get("./API/getAnimeStats.php?anime=a").then(function(response){
+						console.log(response.data);
+						// ### ANO
+						$scope.statsAno = response.data.ANO;
+						var anoTep = 0;
+						for(i=0;i<response.data.ANO.length;i++){
+							anoTep += parseInt(response.data.ANO[i].ANIME);
+						}
+						$scope.AnoEpTotal = anoTep;
 
-				$http.get("./API/getAnimeStats.php?anime=a").then(function(response){
-					console.log(response.data);
-					// ### ANO
-					$scope.statsAno = response.data.ANO;
+						//### DIAS FALTADO
+						var diaFinal =  365-response.data.META.DIA;
+						if(response.data.META.B == "1" && response.data.META.DIA>59)
+							diaFinal++;
+						$scope.diafalta = diaFinal;
+						var epT = response.data.ANO[0].ANIME;
+						$scope.epAssistidos = epT;
+						$scope.epTotal = 1000-epT;
+						$scope.epDia = (1000-epT)/diaFinal;
 
-					//### DIAS FALTADO
-					var diaFinal =  365-response.data.META.DIA;
-					if(response.data.META.B == "1" && response.data.META.DIA>59)
-						diaFinal++;
-					$scope.diafalta = diaFinal;
-					var epT = response.data.ANO[0].ANIME;
-					$scope.epAssistidos = epT;
-					$scope.epTotal = 1000-epT;
-					$scope.epDia = (1000-epT)/diaFinal;
-
-					//#### ANOS COMPLETOS
-					$scope.statsAnoComp = response.data.COMPLETO;
-					var AC = 0;
-					for(i=0;i<response.data.COMPLETO.length;i++){
-						AC += parseInt(response.data.COMPLETO[i].ANIMECOMP);
-					}
-					$scope.totalCompleto = AC;
-					
-     			})
-
-				
+						//#### ANOS COMPLETOS
+						$scope.statsAnoComp = response.data.COMPLETO;
+						var AC = 0;
+						for(i=0;i<response.data.COMPLETO.length;i++){
+							AC += parseInt(response.data.COMPLETO[i].ANIMECOMP);
+						}
+						$scope.totalCompleto = AC;
+	     			})
+				}
             }],
             templateUrl: './template/statsTL.html' 
 		};
