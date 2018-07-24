@@ -67,7 +67,7 @@ body{
 			time = setTimeout(function(){
 				var txt = $(".busca").val();
 				$http.get("./searchAnimetJSON.php?search="+txt).then(function(response){
-					console.log(response.data);
+					//console.log(response.data);
 					for(i=0; i<response.data.length;i++){
 						//console.log(response.data[i]);
 						var tx = response.data[i];
@@ -109,7 +109,7 @@ body{
         				//          A,C,P,D,  F
         				var tA = [0,0,0,0,0,0,0];
       					for(i=0; i<response.data.length;i++){
-       					console.log(response.data[i]);
+       					//console.log(response.data[i]);
       						var tx = response.data[i];
       						tx.a = i+1;
       						response.data[i].texto = tx;
@@ -267,6 +267,7 @@ body{
         				var txt = $(".buscaMal").val();
         				$http.get("./API/MALanimeSearch.php?search="+txt).then(function(response){
         					//console.log(response.data);
+        					
         					if(response.data != ""){
             					//console.log(response.data.categories[0].items.length);
             					for(i=0; i<response.data.categories[0].items.length;i++){
@@ -278,10 +279,10 @@ body{
         					$scope.malMen = response.data;
 							//### ADD novo anime evento
         					$scope.addNewAnimeBTN = function(event) {
-								console.log(event.target.value);
+								//console.log(event.target.value);
 								var an = event.target.value;
 								$http.get("./API/saveNewAnime.php?cod="+an).then(function(response){
-									console.log(response.data);
+									//console.log(response.data);
 									if(response.data.sit == 1){
 										alert(10);
 									}		
@@ -305,7 +306,7 @@ body{
 				//$scope.a = 1;
 				$scope.getStats = function(event){
 					$http.get("./API/getAnimeStats.php?anime=a").then(function(response){
-						console.log(response.data);
+						//console.log(response.data);
 						// ### ANO
 						$scope.statsAno = response.data.ANO;
 						var anoTep = 0;
