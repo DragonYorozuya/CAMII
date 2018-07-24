@@ -25,6 +25,9 @@ body{
 .animeLSbody{
     font-size: 18px;
 }
+.searchBdAnimes img{
+    height: 150px;
+}
 </style>
 <body>
 <div class="container-fluid">
@@ -32,10 +35,12 @@ body{
     	<div class="row">
     		<div class="col-md-12 col-sm-12 border ">
     			Busca: <input type="text" class="busca" ng-change="busca($event)" ng-model="ftxt"><br /><br />
-    			<span ng-repeat="x in bMen" >
-    				<img alt="" src="./img/anime/{{x.ANIIMG}}.jpg">
-    				<div ng-bind-html="x.ANINOME"></div>  <button value="{{ x.ANICOD }}" ng-click="addBTN($event)" style='display:{{x.a}}'>add</button><br/>
-    			</span>
+    	
+    			<div class=" searchBdAnimes" ng-repeat="x in bMen" >
+                  <img alt="" src="./img/anime/{{x.ANIIMG}}.jpg" class="img-thumbnail">
+                  <div ng-bind-html="x.ANINOME"></div>  
+                  <button value="{{ x.ANICOD }}" ng-click="addBTN($event)" class="btn btn-primary" style='display:{{x.a}}'>add</button>
+                </div>
     		</div>
     			
     		<div class="col-md-12 ">
@@ -206,7 +211,8 @@ body{
 					if( (ep[1]+1) < epMax[1] || epMax[1]==0){ //arrumar
 						$http.get("./API/save1ep.php?anime="+anime+"&ep="+(ep[1]+1)).then(function(response){
 							if(response.data.sit ==1){
-								exeListaAnime();
+								//exeListaAnime();
+								$(ep[0]).html(ep[1]+1);
 							}
            				});
            				return;
@@ -215,7 +221,8 @@ body{
 					if((ep[1]+1) == epMax[1]){
 						$http.get("./API/save1epStatusCompleto.php?anime="+anime+"&ep="+(ep[1]+1)).then(function(response){
 							if(response.data.sit ==1){
-								exeListaAnime();
+								//exeListaAnime();
+								$(ep[0]).html(ep[1]+1);
 							}
            				})
 						return;
@@ -324,6 +331,36 @@ body{
 							AC += parseInt(response.data.COMPLETO[i].ANIMECOMP);
 						}
 						$scope.totalCompleto = AC;
+
+						//### ANIME POR MES
+						// ### ANO
+						$scope.statsMes = response.data.MES;
+
+						
+						//FUNÇÃO de filtro
+           				 $scope.filtroANOstatsFnc = function(x=null){
+								
+								//console.log(x.target);
+ 								if(typeof x.target === 'undefined' || x.target === null){
+    								$scope.filtroANOstats = {"ANO" : x};
+    								$scope.statANOmes = x
+    								return
+    							}
+ 								$scope.filtroANOstats = {"ANO" : x.target.value};
+ 								$scope.statANOmes = x.target.value;	
+       					}
+
+           				var d = new Date();
+           			    var n = d.getFullYear();
+           				$scope.filtroANOstatsFnc(n);
+           				
+
+           				
+						
+// 						var anoTep = 0;
+// 						for(i=0;i<response.data.ANO.length;i++){
+// 							anoTep += parseInt(response.data.ANO[i].ANIME);
+// 						}
 	     			})
 				}
             }],

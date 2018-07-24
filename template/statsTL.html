@@ -69,6 +69,24 @@
 		</table>
 	</div>
 	
+	<!-- ### ANIME POR MESES -->
+	<div class="col mt-3">
+		<button class="btn btn-danger" ng-repeat="x in statsAno"  ng-click="filtroANOstatsFnc($event)" value="{{x.DATA}}">{{x.DATA}}</button>
+		<table class="table table-striped table-dark">
+		    <thead class="bg-success">
+		      <tr>
+		        <th scope="col">{{statANOmes}}</th><th scope="col">Episódios</th>
+		      </tr>
+		    </thead>
+		    <tbody > 
+				<tr ng-repeat="x in statsMes | filter : filtroANOstats ">
+				  <td>{{x.MESNOME}}</td><td>{{x.ANIME}}</td>
+				</tr>
+				
+			</tbody> 
+		</table>
+	</div>
+	
 </div>
 </div>
 </div>

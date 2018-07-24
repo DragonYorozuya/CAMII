@@ -113,7 +113,7 @@ class CAMIIanime{
        if ($this->bd->querySelect($sql,[1])) {
            $this->dataAnime['ANO'] =  $this->bd->ResultadosASSOCAll();
            
-           $sql1 = "SELECT COUNT(AASUSER) AS ANIME, extract(year from ASSDATA) AS ANO, extract(month from ASSDATA) as MES FROM ANIMEASSISTIDO WHERE AASUSER=? GROUP BY ANO,MES ORDER BY ANO,MES";
+           $sql1 = "SELECT COUNT(AASUSER) AS ANIME, extract(year from ASSDATA) AS ANO, extract(month from ASSDATA) as MES,MONTHNAME(ASSDATA) as MESNOME FROM ANIMEASSISTIDO WHERE AASUSER=? GROUP BY ANO,MES ORDER BY ANO,MES";
            if ($this->bd->querySelect($sql1,[1])) {
                $this->dataAnime['MES'] =  $this->bd->ResultadosASSOCAll();
                
