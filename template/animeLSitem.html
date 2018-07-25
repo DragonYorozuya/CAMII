@@ -1,27 +1,34 @@
 <div>
-<button ng-click="filtroListaF(1)" class="btn btn-success">Assistindo</button>
-<button ng-click="filtroListaF(2)" class="btn btn-success">Completos</button>
-<button ng-click="filtroListaF(3)" class="btn btn-success">Pausado</button>
-<button ng-click="filtroListaF(4)" class="btn btn-success">Dropado</button>
-<button ng-click="filtroListaF(6)" class="btn btn-success">Quero Assistir</button>
-<button ng-click="reloadListaAnime($event)" class="btn btn-success">Restart</button>
-
+<div class="text-center mb-2 mt-2">
+<div class="btn-group" role="group" aria-label="Basic example">
+	<button ng-click="filtroListaF(1)" class="btn btn-outline-success">Assistindo</button>
+	<button ng-click="filtroListaF(2)" class="btn btn-outline-primary">Completos</button>
+	<button ng-click="filtroListaF(3)" class="btn btn-outline-secondary">Pausado</button>
+	<button ng-click="filtroListaF(4)" class="btn btn-outline-danger">Dropado</button>
+	<button ng-click="filtroListaF(6)" class="btn btn-outline-warning">Quero Assistir</button>
+	<button ng-click="filtroListaF('',3)" class="btn btn-outline-info">OVAS</button>
+	<button ng-click="filtroListaF('',4)" class="btn btn-outline-dark">Filme</button>
+	<button ng-click="reloadListaAnime($event)" class="btn btn btn-warning">Restart</button>
+</div>
+</div>
 <table class="table table-striped table-dark">
-    <thead class="bg-success">
+    <thead class=" text-success">
       <tr>
-        <th scope="col">#</th>
-        <th scope="col">Anime</th>
-        <th scope="col">Episódios</th>
-        <th></th>
+      	<th class='colorSit {{x.colorSit}} border-light'></th>
+        <th scope="col" class='border-light'>#</th>
+        <th scope="col" class='border-light'>Anime</th>
+        <th scope="col" class='border-light'>Episódios</th>
+        <th class='border-light'></th>
       </tr>
     </thead>
     <tbody > 
-		<tr ng-repeat="x in camiiMen  | filter : filtroLista ">
-		  <th scope="row"><div class="sit"></div>{{x.a}}</th>
+		<tr ng-repeat="x in camiiMen  | filter : filtroLista | orderBy : 'MINSITUACAO' ">
+		  <td class="colorSit {{x.colorSit}}"></td>
+		  <th scope="row" >{{x.a}}</th>
 		  <td ng-bind-html="x.ANINOME"></td>
 		  <td>
 			<span class="ep">{{x.EP}}</span>/<span class="epMax">{{ x.ANIEPI }}</span>
-	  		<button class="btn btn-light" value='{{x.ANICOD}}' ng-click="addMais1BTN($event)">+</button>
+	  		<button class="btn btn-light {{x.btn1dd}}" value='{{x.ANICOD}}' ng-click="addMais1BTN($event)">+</button>
 		  </td>
 		  <td>
 		  	<button class="btn btn-danger" value='{{x.ANICOD}}' data-toggle="modal" data-target="#ModalEditar"
@@ -29,6 +36,7 @@
 		  </td>
 		</tr>
 		<tr class="bg-info">
+			<td colorSit {{x.colorSit}}></td>
 			<td colspan="2">Total</td>
 			<td colspan="2" id="animeEpTotal">{{totalEpisodios}}</td>
 		</tr>

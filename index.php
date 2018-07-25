@@ -28,6 +28,9 @@ body{
 .searchBdAnimes img{
     height: 150px;
 }
+.colorSit{
+    width: 10px;
+}
 </style>
 <body>
 <div class="container-fluid">
@@ -106,26 +109,49 @@ body{
 
 				function exeListaAnime(){
     				$http.get("./myListJSON.php").then(function(response){
-        				//          A,C,P,D,  F
-        				var tA = [0,0,0,0,0,0,0];
+        				//          A,C,P,D,ova,F,filme
+        				var tA = [0,0,0,0,0,0,0,0];
       					for(i=0; i<response.data.length;i++){
        					//console.log(response.data[i]);
       						var tx = response.data[i];
       						tx.a = i+1;
+      						// remove botao + dos animes completos
+      						response.data[i].btn1dd = "";
+      						response.data[i].colorSit = "bg-success";
+      						if(response.data[i].MINSITUACAO == 2){
+								response.data[i].btn1dd = "d-none";
+								response.data[i].colorSit = "bg-info";
+              				}
+      						
+      						
       						response.data[i].texto = tx;
-    						switch(response.data[i].MINSITUACAO){
-    							case '1': tA[1] += parseInt(response.data[i].EP); break;
-    							case '2': tA[2] += parseInt(response.data[i].EP); break;
-    							case '3': tA[3] += parseInt(response.data[i].EP); break;
-    							case '4': tA[4] += parseInt(response.data[i].EP); break;
-    							case '6': tA[6] += parseInt(response.data[i].EP);
-    						};
+      						if(response.data[i].ANITIPO == 1){
+        						switch(response.data[i].MINSITUACAO){
+        							case '1': tA[1] += parseInt(response.data[i].EP); break;
+        							case '2': tA[2] += parseInt(response.data[i].EP); break;
+        							case '3': tA[3] += parseInt(response.data[i].EP); break;
+        							case '4': tA[4] += parseInt(response.data[i].EP); break;
+        							case '6': tA[5] += parseInt(response.data[i].EP);
+        						}
+      						}
+      						if(response.data[i].ANITIPO == 3){
+      							tA[5] += parseInt(response.data[i].EP);
+              				}
+      						if(response.data[i].ANITIPO == 4){
+      							tA[7] += parseInt(response.data[i].EP);
+              				}
       					}
     
     					//FUNÇÃO de filtro
-        				 $scope.filtroListaF = function(x=null){
+        				 $scope.filtroListaF = function(x=null,tipo=1){
 							if(x!=null){
-								$scope.filtroLista = {"MINSITUACAO" : x};
+								$scope.filtroLista = {"MINSITUACAO" : x,"ANITIPO": tipo};
+								if(tipo==3){
+									$("#animeEpTotal").html(tA[5]);return;
+								}
+								if(tipo==4){
+									$("#animeEpTotal").html(tA[7]);return;
+								}
 								$("#animeEpTotal").html(tA[x]);
 							}	
     					}
