@@ -108,7 +108,7 @@ class CAMIIanime{
    public function getStatAnimeLista(){
        $this->bd = new BancoDeDados();
        //$sql = "SELECT * FROM ANIMEASSISTIDO WHERE ASSDATA BETWEEN '2017-01-01' AND '2017-12-31' AND AASUSER=1";
-       $sql = "SELECT COUNT(*) AS ANIME,YEAR(ASSDATA) as DATA FROM ANIMEASSISTIDO WHERE AASUSER=? GROUP BY DATA ORDER BY DATA DESC";
+       $sql = "SELECT SUM(ANITIPO = 1) AS ANIME,SUM((ANITIPO=3)+(ANITIPO=2)+(ANITIPO=5)) AS OVA,SUM(ANITIPO = 4) AS FILME,YEAR(ASSDATA) as DATA FROM ANIMEASSISTIDO LEFT JOIN ANIME ON AASANIME=ANICOD WHERE AASUSER=? GROUP BY DATA ORDER BY DATA DESC";
        //DATE_FORMAT( ASSDATA, '%e %b %Y')
        if ($this->bd->querySelect($sql,[1])) {
            $this->dataAnime['ANO'] =  $this->bd->ResultadosASSOCAll();

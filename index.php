@@ -141,18 +141,26 @@ body{
       							tA[7] += parseInt(response.data[i].EP);
               				}
       					}
-    
-    					//FUNÇÃO de filtro
-        				 $scope.filtroListaF = function(x=null,tipo=1){
-							if(x!=null){
-								$scope.filtroLista = {"MINSITUACAO" : x,"ANITIPO": tipo};
-								if(tipo==3){
+      					
+
+    					//FUNÇÃO de filtro     tipo 2 passar como 0
+        				 $scope.filtroListaF = function(xa=null,tipo=1,tipo2=0){
+ 							if(xa!=null){
+ 								$scope.filtroLista = function (x) {
+ 		          					//console.log(x);
+ 		          					if(xa == "")
+ 		          						return x.ANITIPO == tipo || x.ANITIPO == tipo2;
+ 		          					return (x.MINSITUACAO == xa || x.MINSITUACAO == xa) && x.ANITIPO == tipo ;
+ 		      				  	}
+// 								$scope.filtroLista = {"MINSITUACAO" : 1,"ANITIPO": tipo};
+
+								if(tipo==3 || tipo==5){
 									$("#animeEpTotal").html(tA[5]);return;
 								}
 								if(tipo==4){
 									$("#animeEpTotal").html(tA[7]);return;
 								}
-								$("#animeEpTotal").html(tA[x]);
+								$("#animeEpTotal").html(tA[xa]);
 							}	
     					}
     
