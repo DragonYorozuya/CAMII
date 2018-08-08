@@ -113,11 +113,11 @@ class CAMIIanime{
        if ($this->bd->querySelect($sql,[1])) {
            $this->dataAnime['ANO'] =  $this->bd->ResultadosASSOCAll();
            
-           $sql1 = "SELECT COUNT(AASUSER) AS ANIME, extract(year from ASSDATA) AS ANO, extract(month from ASSDATA) as MES,MONTHNAME(ASSDATA) as MESNOME FROM ANIMEASSISTIDO WHERE AASUSER=? GROUP BY ANO,MES ORDER BY ANO,MES";
+           $sql1 = "SELECT SUM(ANITIPO = 1) AS ANIME,SUM((ANITIPO=3)+(ANITIPO=2)+(ANITIPO=5)) AS OVA,SUM(ANITIPO = 4) AS FILME, extract(year from ASSDATA) AS ANO, extract(month from ASSDATA) as MES,MONTHNAME(ASSDATA) as MESNOME FROM ANIMEASSISTIDO LEFT JOIN ANIME ON AASANIME=ANICOD WHERE AASUSER=? GROUP BY ANO,MES ORDER BY ANO,MES";
            if ($this->bd->querySelect($sql1,[1])) {
                $this->dataAnime['MES'] =  $this->bd->ResultadosASSOCAll();
                
-               $sql2 = "SELECT COUNT(*) AS ANIMECOMP,YEAR(MINFINAL) AS ANOCOMP FROM MINHALISTA WHERE MINCLIENTE=? AND MINSITUACAO=2 GROUP BY ANOCOMP";
+               $sql2 = "SELECT SUM(ANITIPO = 1) AS ANIMECOMP,SUM((ANITIPO=3)+(ANITIPO=2)+(ANITIPO=5)) AS OVA,SUM(ANITIPO = 4) AS FILME,YEAR(MINFINAL) AS ANOCOMP FROM MINHALISTA LEFT JOIN ANIME ON MINANIME=ANICOD WHERE MINCLIENTE=? AND MINSITUACAO=2 GROUP BY ANOCOMP";
                if ($this->bd->querySelect($sql2,[1])) {
                    $this->dataAnime['COMPLETO'] = $this->bd->ResultadosASSOCAll();
                }

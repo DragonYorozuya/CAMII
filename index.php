@@ -361,11 +361,20 @@ body{
 
 						//#### ANOS COMPLETOS
 						$scope.statsAnoComp = response.data.COMPLETO;
-						var AC = 0;
+						var AC = 0,ACova = 0, ACfilme = 0;
 						for(i=0;i<response.data.COMPLETO.length;i++){
 							AC += parseInt(response.data.COMPLETO[i].ANIMECOMP);
 						}
+						for(i=0;i<response.data.COMPLETO.length;i++){
+							ACova += parseInt(response.data.COMPLETO[i].OVA);
+						}
+						for(i=0;i<response.data.COMPLETO.length;i++){
+							ACfilme += parseInt(response.data.COMPLETO[i].FILME);
+						}
 						$scope.totalCompleto = AC;
+						$scope.OVAtotalCompleto = ACova;
+						$scope.FILMEtotalCompleto = ACfilme;
+						
 
 						//### ANIME POR MES
 						// ### ANO
