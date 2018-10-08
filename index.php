@@ -143,7 +143,7 @@ body{
       					}
       					
 
-    					//FUNÇÃO de filtro     tipo 2 passar como 0
+    					//FUNÃ‡ÃƒO de filtro     tipo 2 passar como 0
         				 $scope.filtroListaF = function(xa=null,tipo=1,tipo2=0){
  							if(xa!=null){
  								$scope.filtroLista = function (x) {
@@ -281,6 +281,17 @@ body{
      				})
 				}
 				///######## FIM
+
+				$scope.atualizarAnime = function(ani){
+// 					alert(ani);
+					$http.get("./API/updateAnimeMal.php?n="+ani).then(function(r){
+						console.log(r.data);
+						if(r.data.sit == 1){
+							alert("Anime Atualizado");
+						}		
+     				})
+				}
+				
 			}],
 			templateUrl: './template/animeLSitem.html'
 		};
@@ -381,7 +392,7 @@ body{
 						$scope.statsMes = response.data.MES;
 
 						
-						//FUNÇÃO de filtro
+						//FUNÃ‡ÃƒO de filtro
            				 $scope.filtroANOstatsFnc = function(x=null){
 								
 								//console.log(x.target);
