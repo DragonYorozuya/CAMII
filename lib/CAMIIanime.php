@@ -25,7 +25,7 @@ class CAMIIanime{
    public function searchAnime($search,$json=false){
        $this->bd = new BancoDeDados();
        
-       $sql = "SELECT * FROM ANIME LEFT JOIN MINHALISTA ON ANICOD=MINANIME WHERE ANINOME LIKE ?";
+       $sql = "SELECT * FROM ANIME LEFT JOIN MINHALISTA ON ANICOD=MINANIME WHERE ANINOME LIKE ? ORDER BY MINCLIENTE ASC";
        
        if($this->bd->querySelect($sql,['%'.$search.'%'])){
        

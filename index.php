@@ -37,18 +37,41 @@ body{
 	<div ng-app="CAMII" ng-controller="camiiCtr">
     	<div class="row">
     		<div class="col-md-12 col-sm-12 border ">
+    		<!--  
     			Busca: <input type="text" class="busca" ng-change="busca($event)" ng-model="ftxt"><br /><br />
-    	
-    			<div class=" searchBdAnimes" ng-repeat="x in bMen" >
-                  <img alt="" src="./img/anime/{{x.ANIIMG}}.jpg" class="img-thumbnail">
-                  <div ng-bind-html="x.ANINOME"></div>  
-                  <button value="{{ x.ANICOD }}" ng-click="addBTN($event)" class="btn btn-primary" style='display:{{x.a}}'>add</button>
+    			  -->
+    			
+    			<div class="input-group mb-3">
+                  <div class="input-group-prepend">
+                    <span class="input-group-text" id="basic-addon1">Busca</span>
+                  </div>
+                  <input type="text" class="form-control busca" ng-change="busca(ftxt)" ng-model="ftxt">
+                  <div class="input-group-append">
+                    <button class="btn btn-danger pl-4 pr-4" ng-click="clearBusca();busca('')"> X </button><br /><br />
+                  </div>
+    			</div> 
+        			
+        		<div class="row p-0 m-0">
+        			<div class="col-md-6  searchBdAnimes " ng-repeat="x in bMen" >
+            			<div class="row p-0 m-1 border">
+            				<div class="col-md-4">
+                          		<img alt="" src="./img/anime/{{x.ANIIMG}}.jpg" class="img-thumbnail">
+                          	</div>
+                            <div class="col-md-8">
+                              <div ng-bind-html="x.ANINOME" class="pb-5"></div>  
+                              <button ng-click="addBTN(x.ANICOD)" class="btn btn-primary" style='display:{{x.a}}'>
+                              	<h4>add</h4>
+                              </button>
+                        	</div>
+                    	</div>
+                    </div>
                 </div>
+    		
     		</div>
     			
     		<div class="col-md-12 ">
+    			<malsearch></malsearch>
             	<anime></anime>
-            	<malsearch></malsearch>
             	<stats></stats>
             	
     		</div>
@@ -65,10 +88,10 @@ body{
 
 		//########### SEARCH
 		var time;//tempo para iniciar a busca
-		$scope.busca = function (event) {
+		$scope.busca = function (txt) {
+// 			console.log(e);
 			clearTimeout(time);
 			time = setTimeout(function(){
-				var txt = $(".busca").val();
 				$http.get("./searchAnimetJSON.php?search="+txt).then(function(response){
 					//console.log(response.data);
 					for(i=0; i<response.data.length;i++){
@@ -85,14 +108,19 @@ body{
 			},1000);
 		}
 
+		$scope.clearBusca = function(){
+			$scope.ftxt = "";
+		}
+
 		//#### ADD a lista
-		$scope.addBTN = function(event){
-			var txt = event.target.value;
-			//alert("./saveAnimeLista.php?add="+txt);
+		$scope.addBTN = function(anime){
+			var txt = anime;
+// 			alert("./saveAnimeLista.php?add="+txt);
 			$http.get("./saveAnimeLista.php?add="+txt).then(function(response){
-				//console.log(response.data);
+				console.log(response.data);
 				if(response.data.sit == 1){
-					alert("add");
+					$scope.clearBusca();
+					$scope.busca('');
 				}else{
 					alert("erro");
 				}
@@ -104,7 +132,7 @@ body{
             restrict: 'AE',
             replace: true,
             transclude: true,
-            scope: {title: '@'},
+            scope: false,
             controller: ['$scope', function m($scope) {
 
 				function exeListaAnime(){
@@ -284,7 +312,7 @@ body{
 
 				$scope.atualizarAnime = function(ani){
 // 					alert(ani);
-					$http.get("./API/updateAnimeMal.php?n="+ani).then(function(r){
+					$http.get("./API/updateAnimeMAL.php?n="+ani).then(function(r){
 						console.log(r.data);
 						if(r.data.sit == 1){
 							alert("Anime Atualizado");
@@ -307,6 +335,7 @@ body{
             	//## MAL
         		var time;
         		$scope.buscaMal = function (event) {
+        			$scope.sucessoMALNEW = "";
         			clearTimeout(time);
         			time = setTimeout(function(){
         				var txt = $(".buscaMal").val();
@@ -324,13 +353,17 @@ body{
         					$scope.malMen = response.data;
 							//### ADD novo anime evento
         					$scope.addNewAnimeBTN = function(event) {
+        						$scope.sucessoMALNEW = "";
 								//console.log(event.target.value);
 								var an = event.target.value;
 								$http.get("./API/saveNewAnime.php?cod="+an).then(function(response){
 									//console.log(response.data);
 									if(response.data.sit == 1){
-										alert(10);
-									}		
+										$scope.sucessoMALNEW = "OK";
+// 										alert(10);
+										return;
+									}	
+									$scope.sucessoMALNEW = "ERROR";	
 								});
 							}	
         				});

@@ -1,7 +1,5 @@
 <?php
 if (isset($_GET["n"])) {
-    
-
     require_once "../lib/BancoDeDados.php";
 
 //     $anime = 37210;
