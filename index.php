@@ -162,7 +162,7 @@ body{
         							case '6': tA[5] += parseInt(response.data[i].EP);
         						}
       						}
-      						if(response.data[i].ANITIPO == 3){
+      						if(response.data[i].ANITIPO == 2 || response.data[i].ANITIPO == 3 || response.data[i].ANITIPO == 5){
       							tA[5] += parseInt(response.data[i].EP);
               				}
       						if(response.data[i].ANITIPO == 4){
@@ -172,17 +172,17 @@ body{
       					
 
     					//FUNÃ‡ÃƒO de filtro     tipo 2 passar como 0
-        				 $scope.filtroListaF = function(xa=null,tipo=1,tipo2=0){
+        				 $scope.filtroListaF = function(xa=null,tipo=1,tipo2=0,tipo3=0){
  							if(xa!=null){
  								$scope.filtroLista = function (x) {
  		          					//console.log(x);
  		          					if(xa == "")
- 		          						return x.ANITIPO == tipo || x.ANITIPO == tipo2;
+ 		          						return x.ANITIPO == tipo || x.ANITIPO == tipo2 || x.ANITIPO == tipo3;
  		          					return (x.MINSITUACAO == xa || x.MINSITUACAO == xa) && x.ANITIPO == tipo ;
  		      				  	}
 // 								$scope.filtroLista = {"MINSITUACAO" : 1,"ANITIPO": tipo};
 
-								if(tipo==3 || tipo==5){
+								if(tipo==2 || tipo==3 || tipo==5){
 									$("#animeEpTotal").html(tA[5]);return;
 								}
 								if(tipo==4){

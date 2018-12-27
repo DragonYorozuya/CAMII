@@ -234,10 +234,10 @@ function dados($html,$cod){
     }
     
     //#### IMAGE
-    if(preg_match ('/http[ s]:\/\/myanimelist.cdn-dena.com\/images\/anime\/[0-9]*[\/]{1}([0-9]*)[\.][a-z-A-Z]{3,4}/', $html, $img)){
+    if(preg_match ('/src="(.*?\/images\/anime\/[0-9]*[\/]{1}([0-9]*)[\.][a-z-A-Z]{3,4})/', $html, $img)){
         //var_dump($img);
-        $anime["img"] = $img[1];
-        $anime["imgUrl"] = $img[0];
+        $anime["img"] = $img[2];
+        $anime["imgUrl"] = $img[1];
         //$img[0];
         //$img[1];
     }else{
