@@ -73,7 +73,7 @@ body{
     			<malsearch></malsearch>
             	<anime></anime>
             	<stats></stats>
-            	
+            	<animeinfo></animeinfo>
     		</div>
     	</div>
     	
@@ -457,5 +457,7 @@ body{
 	}]);
 	
 	</script>
+	<script src="./js/app/anime.js"></script>
+<a href="#" onclick="history.pushState('teste','Titulo de teste','/testae'); return false;">/teste</a></h2>
 </body>
 </html>

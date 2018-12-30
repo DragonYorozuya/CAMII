@@ -236,6 +236,22 @@ class CAMIIanime{
        }
    }
     
+   //SITE
+   public $cData;
+   
+   public function cAnime($cod) {
+       $this->bd = new BancoDeDados();
+       
+       $sql = "SELECT * FROM ANIME WHERE ANICOD=?";
+       
+       if($this->bd->querySelect($sql,[$cod])){
+           //var_dump($this->bd->ResultadosASSOC());
+           $this->cData = $this->bd->ResultadosASSOC();
+           return true;
+       }
+       return false;
+       
+   }
    
     
 }
