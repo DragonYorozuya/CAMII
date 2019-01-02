@@ -24,7 +24,7 @@
 		<tr ng-repeat="x in camiiMen  | filter : filtroLista | orderBy : 'MINSITUACAO' ">
 		  <td class="colorSit {{x.colorSit}}"></td>
 		  <th scope="row" >{{x.a}}</th>
-		  <td ng-bind-html="x.ANINOME"></td>
+		  <td ng-bind-html="x.ANINOME" ng-click="animegetinfo(x.ANICOD)"></td>
 		  <td>
 			<span class="ep">{{x.EP}}</span>/<span class="epMax">{{ x.ANIEPI }}</span>
 	  		<button class="btn btn-light {{x.btn1dd}}" value='{{x.ANICOD}}' ng-click="addMais1BTN($event)">+</button>

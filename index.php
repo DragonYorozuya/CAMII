@@ -384,7 +384,7 @@ body{
 				//$scope.a = 1;
 				$scope.getStats = function(event){
 					$http.get("./API/getAnimeStats.php?anime=a").then(function(response){
-						//console.log(response.data);
+						console.log(response.data);
 						// ### ANO
 						$scope.statsAno = response.data.ANO;
 						var anoTep = 0;

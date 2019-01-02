@@ -6,19 +6,38 @@ app.directive('animeinfo', ['$http', function($http) {
             transclude: true,
             scope: false,
             controller: ['$scope', function m($scope) {
+            	
+            	$scope.animegetinfo = function(x){
+            		//alert(x);
+            	
 
-				var txt = 10162;
-            	$http.get("./API/anime/anime.php?cod="+txt).then(function(r){
-					console.log(r.data);
-
-					$scope.nome = r.data.ANINOME;
-					if(r.data != ""){
-    					//console.log(response.data.categories[0].items.length);
-    					
-					}
-					
-				});
-
+					var txt = x;
+	            	$http.get("./API/anime/anime.php?cod="+txt).then(function(r){
+						console.log(r.data);
+	
+						$scope.codinfo = r.data.ANICOD;
+						$scope.nomeinfo = r.data.ANINOME;
+						$scope.epifno = r.data.ANIEPI;
+						$scope.imginfo = r.data.ANIIMG;
+						if(r.data != ""){
+	    					//console.log(response.data.categories[0].items.length);
+	    					
+						}
+						
+					});
+            	}
+            	
+//            		ANIADAP: "1"
+//            		ANIANO: null
+//            		ANICI: "1"
+//            		ANIESTUDIO: "10"
+//            		ANIFINAL: "2011-09-16"
+//            		ANIIMG: "29665"
+//            		ANIINICIO: "2011-07-08"
+//            		ANISIN: null
+//            		ANISTATUS: "2"
+//            		ANITEMP: null
+//            		ANITIPO: "1"
 
             	//## MAL
 //         		var time;
